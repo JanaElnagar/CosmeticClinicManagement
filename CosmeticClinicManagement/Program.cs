@@ -48,6 +48,7 @@ public class Program
                 await app.Services.GetRequiredService<CosmeticClinicManagementDbMigrationService>().MigrateAsync();
                 return 0;
             }
+            
 
             Log.Information("Starting CosmeticClinicManagement.");
             await app.RunAsync();
