@@ -7,6 +7,21 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
         public Guid RawMaterialId { get; private set; }
         public decimal Quantity { get; private set; }
 
+        public UsedMaterial(Guid rawMaterialId, decimal quantity)
+        {
+            RawMaterialId = rawMaterialId;
+            Quantity = quantity;
+        }
+
+        public void AddQuantity(decimal additionalQuantity)
+        {
+            if (additionalQuantity <= 0)
+            {
+                throw new ArgumentException("Additional quantity must be greater than zero.");
+            }
+            Quantity += additionalQuantity;
+        }
+
         protected override IEnumerable<object> GetAtomicValues()
         {
             return [ RawMaterialId, Quantity ];
