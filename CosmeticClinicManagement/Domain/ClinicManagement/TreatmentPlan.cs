@@ -22,15 +22,8 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
         }
 
 
-        public void AddSession(Session session)
+        internal void AddSession(Session session)
         {
-            ThrowExceptionIfClosed();
-
-            if (!IsValidSession(session))
-            {
-                throw new InvalidOperationException("Invalid session cannot be added to the treatment plan.");
-            }
-
             Sessions.Add(session);
         }
 
@@ -105,19 +98,19 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
         }
 
 
-        private bool IsValidSession(Session session)
+        internal bool IsValidNewSessionDate(DateTime date)
         {
-            if (Sessions.Any(s => s.Id == session.Id))
+            if (HasActiveSession() && date < CurrentActiveSession().SessionDate)
             {
                 return false;
             }
 
-            if (HasActiveSession() && session.SessionDate < CurrentActiveSession().SessionDate)
+            if (Sessions.Any(s => s.SessionDate == date))
             {
                 return false;
             }
 
-            if (session.SessionDate < DateTime.Now.AddMinutes(-5))
+            if (date < DateTime.Now.AddMinutes(-5))
             {
                 return false;
             }
@@ -136,7 +129,7 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
                 ?? throw new InvalidOperationException("Session not found in the treatment plan.");
         }
 
-        private void ThrowExceptionIfClosed()
+        internal void ThrowExceptionIfClosed()
         {
             if (Status == TreatmentPlanStatus.Closed)
                 throw new InvalidOperationException("You cannot operate on a closed plan.");

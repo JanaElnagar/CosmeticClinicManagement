@@ -1,9 +1,8 @@
-﻿using Volo.Abp.Domain.Entities;
-using Volo.Abp.Domain.Values;
+﻿using Volo.Abp.Domain.Entities.Auditing;
 
 namespace CosmeticClinicManagement.Domain.ClinicManagement
 {
-    public class Session : Entity<Guid>
+    public class Session : FullAuditedEntity<Guid>
     {
         public DateTime SessionDate { get; private set; }
         public List<UsedMaterial> UsedMaterials { get; private set; }
