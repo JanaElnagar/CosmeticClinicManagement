@@ -24,7 +24,8 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
 
         protected override IEnumerable<object> GetAtomicValues()
         {
-            return [ RawMaterialId, Quantity ];
+            yield return RawMaterialId;
+            yield return Quantity;
         }
     }
 }

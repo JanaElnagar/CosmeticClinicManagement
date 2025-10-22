@@ -3,7 +3,7 @@ using Volo.Abp.Domain.Values;
 
 namespace CosmeticClinicManagement.Domain.ClinicManagement
 {
-    public class Session : ValueObject
+    public class Session : Entity<Guid>
     {
         public DateTime SessionDate { get; private set; }
         public List<UsedMaterial> UsedMaterials { get; private set; }
@@ -54,12 +54,6 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
             }
 
             Notes.Add(note);
-        }
-
-
-        protected override IEnumerable<object> GetAtomicValues()
-        {
-            return [SessionDate, UsedMaterials, Notes, Status];
         }
 
         public void UpdateStatus(SessionStatus newStatus)

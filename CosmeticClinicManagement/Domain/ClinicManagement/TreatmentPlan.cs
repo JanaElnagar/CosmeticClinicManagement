@@ -9,17 +9,7 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
         public List<Session> Sessions { get; private set; } = [new Session(DateTime.Now, [], SessionStatus.Planned)];
         public TreatmentPlanStatus Status { get; private set; } = TreatmentPlanStatus.Ongoing;
 
-        private Session CurrentActiveSession()
-        {
-            var session = Sessions.SingleOrDefault(s => s.Status == SessionStatus.InProgress);
-            return session ?? throw new InvalidOperationException("No active session found.");
-        }
-
-        private bool HasActiveSession()
-        {
-            return Sessions.Any(s => s.Status == SessionStatus.InProgress);
-        }
-
+        
         public void AddSession(Session session)
         {
             ThrowExceptionIfClosed();
@@ -102,6 +92,7 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
             Status = TreatmentPlanStatus.Closed;
         }
 
+
         private bool IsValidSession(Session session)
         {
             if (Sessions.Any(s => s.Id == session.Id))
@@ -137,6 +128,17 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
         {
             if (Status == TreatmentPlanStatus.Closed)
                 throw new InvalidOperationException("You cannot operate on a closed plan.");
+        }
+
+        private Session CurrentActiveSession()
+        {
+            var session = Sessions.SingleOrDefault(s => s.Status == SessionStatus.InProgress);
+            return session ?? throw new InvalidOperationException("No active session found.");
+        }
+
+        private bool HasActiveSession()
+        {
+            return Sessions.Any(s => s.Status == SessionStatus.InProgress);
         }
     }
 }
