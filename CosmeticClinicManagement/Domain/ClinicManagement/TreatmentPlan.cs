@@ -1,15 +1,27 @@
-﻿using Volo.Abp.Domain.Entities.Auditing;
+﻿using Microsoft.EntityFrameworkCore.ValueGeneration;
+using Volo.Abp.Domain.Entities.Auditing;
+using Volo.Abp.Guids;
 
 namespace CosmeticClinicManagement.Domain.ClinicManagement
 {
-    public class TreatmentPlan(Guid doctorId, Guid patientId) : FullAuditedAggregateRoot<Guid>
+    public class TreatmentPlan : FullAuditedAggregateRoot<Guid>
     {
-        public Guid DoctorId { get; private set; } = doctorId;
-        public Guid PatientId { get; private set; } = patientId;
-        public List<Session> Sessions { get; private set; } = [new Session(DateTime.Now, [], SessionStatus.Planned)];
-        public TreatmentPlanStatus Status { get; private set; } = TreatmentPlanStatus.Ongoing;
+        public Guid DoctorId { get; private set; }
+        public Guid PatientId { get; private set; }
+        public List<Session> Sessions { get; private set; }
+        public TreatmentPlanStatus Status { get; private set; }
 
-        
+        protected TreatmentPlan() { }
+
+        public TreatmentPlan(Guid Id, Guid doctorId, Guid patientId) : base(Id)
+        {
+            DoctorId = doctorId;
+            PatientId = patientId;
+            Status = TreatmentPlanStatus.Ongoing;
+            Sessions = [];
+        }
+
+
         public void AddSession(Session session)
         {
             ThrowExceptionIfClosed();

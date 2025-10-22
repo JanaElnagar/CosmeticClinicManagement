@@ -9,8 +9,11 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
         public List<UsedMaterial> UsedMaterials { get; private set; }
         public List<string> Notes { get; private set; }
         public SessionStatus Status { get; private set; }
+        public Guid PlanId { get; private set; }
 
-        public Session(DateTime sessionDate, List<string> notes, SessionStatus status)
+        protected Session() { }
+
+        public Session(Guid Id, Guid planId, DateTime sessionDate, List<string> notes, SessionStatus status) : base(Id)
         {
             if (sessionDate < DateTime.Now)
             {
@@ -26,6 +29,7 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
             UsedMaterials = [];
             Notes = notes;
             Status = status;
+            PlanId = planId;
         }
 
         public void AddUsedMaterial(UsedMaterial usedMaterial)
