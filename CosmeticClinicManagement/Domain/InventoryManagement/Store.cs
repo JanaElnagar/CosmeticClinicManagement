@@ -19,5 +19,15 @@ namespace CosmeticClinicManagement.Domain.InventoryManagement
             Name = name;
             Materials = [];
         }
+
+        public void ChangeName(string newName)
+        {
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                throw new ArgumentException("Store name cannot be empty.", nameof(newName));
+            }
+
+            Name = newName;
+        }
     }
 }

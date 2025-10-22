@@ -49,6 +49,13 @@ public class Program
                 return 0;
             }
 
+            using (var scope = app.Services.CreateScope())
+            {
+                await scope.ServiceProvider
+                    .GetRequiredService<IDataSeeder>()
+                    .SeedAsync();
+            }
+
             Log.Information("Starting CosmeticClinicManagement.");
             await app.RunAsync();
             return 0;
