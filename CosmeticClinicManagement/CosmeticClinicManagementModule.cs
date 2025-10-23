@@ -50,6 +50,8 @@ using Volo.Abp.UI.Navigation;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.Validation.Localization;
 using Volo.Abp.VirtualFileSystem;
+using CosmeticClinicManagement.Domain.Interfaces;
+using CosmeticClinicManagement.Domain.PatientAggregateRoot;
 
 namespace CosmeticClinicManagement;
 
@@ -106,7 +108,7 @@ namespace CosmeticClinicManagement;
 public class CosmeticClinicManagementModule : AbpModule
 {
     /* Single point to enable/disable multi-tenancy */
-    public const bool IsMultiTenant = true;
+    public const bool IsMultiTenant = false;
 
     public override void PreConfigureServices(ServiceConfigurationContext context)
     {
