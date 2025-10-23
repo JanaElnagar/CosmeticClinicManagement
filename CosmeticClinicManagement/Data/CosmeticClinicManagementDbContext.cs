@@ -1,6 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CosmeticClinicManagement.Domain.ClinicManagement;
+using CosmeticClinicManagement.Domain.InventoryManagement;
+using CosmeticClinicManagement.Domain.Patient;
+using Microsoft.EntityFrameworkCore;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity.EntityFrameworkCore;
 using Volo.Abp.OpenIddict.EntityFrameworkCore;
@@ -17,6 +21,10 @@ public class CosmeticClinicManagementDbContext : AbpDbContext<CosmeticClinicMana
     {
     }
 
+    DbSet<TreatmentPlan> TreatmentPlans { get; set; }
+    DbSet<Store> Stores { get; set; }
+    DbSet<Patient> Patients { get; set; }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -31,6 +39,69 @@ public class CosmeticClinicManagementDbContext : AbpDbContext<CosmeticClinicMana
         builder.ConfigureFeatureManagement();
         builder.ConfigureTenantManagement();
 
-        /* Configure your own entities here */
+        builder.Entity<TreatmentPlan>(b =>
+        {
+            b.ToTable("AppTreatmentPlans");
+
+            b.ConfigureByConvention();
+
+            b.Property(x => x.DoctorId).IsRequired();
+            b.Property(x => x.PatientId).IsRequired();
+
+            b.Property(x => x.Status)
+                .HasConversion<string>()
+                .IsRequired();
+
+            b.HasMany(x => x.Sessions)
+                .WithOne()
+                .HasForeignKey("PlanId")
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<Session>(b =>
+        {
+            b.ToTable("AppSessions");
+            b.ConfigureByConvention();
+
+            b.Property<Guid>("PlanId");
+            b.HasKey(x => x.Id);
+
+            b.Property(x => x.SessionDate).IsRequired();
+            b.Property(x => x.Status).IsRequired();
+        });
+
+        builder.Entity<Store>(b =>
+        {
+            b.ToTable("AppStores");
+            b.ConfigureByConvention();
+            b.Property(x => x.Name).IsRequired().HasMaxLength(200);
+            b.HasMany(x => x.RawMaterials)
+                .WithOne()
+                .HasForeignKey("StoreId")
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<RawMaterial>(b =>
+        {
+            b.ToTable("AppRawMaterials");
+            b.ConfigureByConvention();
+            b.Property<Guid>("StoreId");
+            b.HasKey(x => x.Id);
+            b.Property(x => x.Name).IsRequired().HasMaxLength(200);
+            b.Property(x => x.Description).IsRequired().HasMaxLength(1000);
+            b.Property(x => x.Quantity).IsRequired();
+            b.Property(x => x.Price).IsRequired().HasColumnType("decimal(18,2)");
+            b.Property(x => x.ExpiryDate).IsRequired();
+        });
+
+        builder.Entity<Patient>(b =>
+        {
+            b.ToTable("AppPatients");
+            b.ConfigureByConvention();
+            b.Property(x => x.FullName).IsRequired().HasMaxLength(200);
+            b.Property(x => x.DateOfBirth).IsRequired();
+            b.Property(x => x.PhoneNumber).HasMaxLength(500).IsRequired();
+            b.Property(x => x.Email).HasMaxLength(500);
+        });
     }
 }
