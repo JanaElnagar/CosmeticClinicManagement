@@ -1,6 +1,8 @@
-﻿namespace CosmeticClinicManagement.Services.Interfaces
+﻿using Volo.Abp.Application.Services;
+
+namespace CosmeticClinicManagement.Services.Interfaces
 {
-    public interface IStoreAppService
+    public interface IStoreAppService : IApplicationService
     {
     }
 }

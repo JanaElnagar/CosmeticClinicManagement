@@ -50,6 +50,8 @@ using Volo.Abp.UI.Navigation;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.Validation.Localization;
 using Volo.Abp.VirtualFileSystem;
+using CosmeticClinicManagement.Domain.Interfaces;
+using CosmeticClinicManagement.Domain.PatientAggregateRoot;
 
 namespace CosmeticClinicManagement;
 

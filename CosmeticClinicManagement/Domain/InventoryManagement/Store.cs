@@ -5,7 +5,7 @@ namespace CosmeticClinicManagement.Domain.InventoryManagement
     public class Store : BasicAggregateRoot<Guid>
     {
         public string Name { get; private set; }
-        public List<RawMaterial> Materials { get; private set; }
+        public List<RawMaterial> RawMaterials { get; private set; }
 
         protected Store() { }
 
@@ -17,7 +17,7 @@ namespace CosmeticClinicManagement.Domain.InventoryManagement
             }
 
             Name = name;
-            Materials = [];
+            RawMaterials = [];
         }
 
         public void ChangeName(string newName)
