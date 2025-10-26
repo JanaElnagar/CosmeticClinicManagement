@@ -1,4 +1,3 @@
-using CosmeticClinicManagement.Services;
 using CosmeticClinicManagement.Services.Dtos.Store;
 using CosmeticClinicManagement.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +10,7 @@ namespace CosmeticClinicManagement.Pages.Stores.RawMaterials
         private readonly IStoreAppService _storeAppService;
 
         [BindProperty(SupportsGet = true)]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; }  // raw material ID
 
         [BindProperty(SupportsGet = true)]
         public Guid StoreId { get; set; }
@@ -30,7 +29,7 @@ namespace CosmeticClinicManagement.Pages.Stores.RawMaterials
 
             try
             {
-                RawMaterial = await _storeAppService.GetRawMaterialAsync(id);
+                RawMaterial = await _storeAppService.GetRawMaterialAsync(storeId, id);
             }
             catch
             {
@@ -42,7 +41,7 @@ namespace CosmeticClinicManagement.Pages.Stores.RawMaterials
 
         public async Task<IActionResult> OnPostAsync()
         {
-            await _storeAppService.DeleteRawMaterialAsync(Id);
+            await _storeAppService.DeleteRawMaterialAsync(StoreId, Id);
             return RedirectToPage("/Stores/Details", new { id = StoreId });
         }
     }
