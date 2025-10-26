@@ -1,0 +1,42 @@
+﻿@page
+@model CosmeticClinicManagement.Pages.Stores.IndexModel
+
+<h1>Stores</h1>
+
+@foreach (var store in Model.Stores)
+{
+    <section class="mb-4">
+        <h2>@store.Name</h2>
+
+        @if (store.RawMaterials == null || !store.RawMaterials.Any())
+        {
+            <p>No raw materials.</p>
+        }
+        else
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Expiry</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var rm in store.RawMaterials)
+                {
+                    <tr>
+                        <td>@rm.Name</td>
+                        <td>@rm.Description</td>
+                        <td>@rm.Quantity</td>
+                        <td>@rm.Price.ToString("C")</td>
+                        <td>@rm.ExpiryDate.ToShortDateString()</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </section>
+}
