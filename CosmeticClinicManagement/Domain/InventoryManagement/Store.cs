@@ -9,7 +9,7 @@ namespace CosmeticClinicManagement.Domain.InventoryManagement
 
         protected Store() { }
 
-        public Store (Guid Id, string name) : base(Id)
+        public Store (Guid id, string name) : base(id)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -17,7 +17,7 @@ namespace CosmeticClinicManagement.Domain.InventoryManagement
             }
 
             Name = name;
-            RawMaterials = [];
+            RawMaterials = new List<RawMaterial>();
         }
 
         public void ChangeName(string newName)

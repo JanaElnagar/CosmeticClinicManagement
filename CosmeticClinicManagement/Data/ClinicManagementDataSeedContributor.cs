@@ -11,10 +11,18 @@ namespace CosmeticClinicManagement.Data
         private readonly IRepository <Store, Guid> _storeRepository;
         private readonly IRepository<RawMaterial, Guid> _rawMaterialRepository;
 
+        public ClinicManagementDataSeedContributor(
+                    IRepository<Store, Guid> storeRepository,
+                    IRepository<RawMaterial, Guid> rawMaterialRepository)
+        {
+            _storeRepository = storeRepository ?? throw new ArgumentNullException(nameof(storeRepository));
+            _rawMaterialRepository = rawMaterialRepository ?? throw new ArgumentNullException(nameof(rawMaterialRepository));
+        }
         public async Task SeedAsync(DataSeedContext context)
         {
             // Implement your data seeding logic here.
             // For example, you can create default treatment plans, stores, or patients.
+            
 
             if (await _storeRepository.GetCountAsync() == 0)
             {
