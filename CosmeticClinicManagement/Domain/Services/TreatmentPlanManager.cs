@@ -12,7 +12,7 @@ namespace CosmeticClinicManagement.Domain.Services
         private readonly IGuidGenerator _guidGenerator = guidGenerator;
         private readonly IRawMaterialRepository _rawMaterialRepository = rawMaterialRepository;
 
-        public async void AddUsedMaterialToSession(Guid planId, Guid sessionId, Guid rawMaterialId, int quantity)
+        public async Task AddUsedMaterialToSession(Guid planId, Guid sessionId, Guid rawMaterialId, decimal quantity)
         {
             if (quantity <= 0)
             {
