@@ -32,6 +32,20 @@ public class CosmeticClinicManagementMenuContributor : IMenuContributor
             )
         );
 
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                "PatientsManagement",
+                l["Menu:PatientsManagement"],
+                icon: "fa fa-users"
+            ).AddItem(
+                new ApplicationMenuItem(
+                    "PatientManagement.Patients",
+                    l["Menu:Patients"],
+                    url: "/Patients"
+                )
+            )
+        );
+
         if (CosmeticClinicManagementModule.IsMultiTenant)
         {
             administration.SetSubItemOrder(TenantManagementMenuNames.GroupName, 1);

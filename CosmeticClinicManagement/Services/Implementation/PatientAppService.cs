@@ -33,6 +33,14 @@ namespace CosmeticClinicManagement.Services.Implementation
             await _patientRepository.DeleteAsync(id);
         }
 
+        public Task<List<PatientDto>> GetAllPatientsAsync()
+        {
+            var patients =  _patientRepository.GetListAsync();
+            return patients.ContinueWith(task => 
+                ObjectMapper.Map<List<Patient>, List<PatientDto>>(task.Result)
+            );
+        }
+
         public async Task<PatientDto> GetAsync(Guid id)
         {
             PatientDto patientDto = ObjectMapper.Map<Patient, PatientDto>(await _patientRepository.GetAsync(id));
@@ -56,7 +64,8 @@ namespace CosmeticClinicManagement.Services.Implementation
                 throw new ArgumentException("The ID in the URL does not match the ID in the body.");
             }
 
-            var patient = ObjectMapper.Map<PatientDto, Patient>(input);
+            var patient = await _patientRepository.FindAsync(id);
+            ObjectMapper.Map(input, patient);
             await _patientRepository.UpdateAsync(patient, autoSave: true);
         }
     }
