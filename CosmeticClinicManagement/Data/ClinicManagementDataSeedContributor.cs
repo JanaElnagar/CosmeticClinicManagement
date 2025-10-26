@@ -50,7 +50,7 @@ namespace CosmeticClinicManagement.Data
                     defaultStore.Id);
 
                 await _storeRepository.InsertAsync(defaultStore);
-                await _rawMaterialRepository.InsertAsync(rawMaterial1);
+                await _rawMaterialRepository.InsertManyAsync(new[] { rawMaterial1, rawMaterial2, rawMaterial3 });
             }
         }
     }
