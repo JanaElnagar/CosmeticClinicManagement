@@ -40,12 +40,12 @@ namespace CosmeticClinicManagement.Domain.InventoryManagement
 
             if (quantity <= 0)
             {
-                throw new ArgumentException("Quantity must be non-negative.", nameof(quantity));
+                throw new ArgumentException("Quantity must be greater than zero.", nameof(quantity));
             }
 
             if (price <= 0)
             {
-                throw new ArgumentException("Price must be non-negative.", nameof(price));
+                throw new ArgumentException("Price must be greater than zero.", nameof(price));
             }
 
             if (expiryDate < DateTime.Now.AddDays(30))

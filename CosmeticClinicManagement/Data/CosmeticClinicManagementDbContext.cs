@@ -106,7 +106,6 @@ public class CosmeticClinicManagementDbContext : AbpDbContext<CosmeticClinicMana
         {
             b.ToTable("AppPatients");
             b.ConfigureByConvention();
-            b.Property(x => x.FullName).IsRequired().HasMaxLength(200);
             b.Property(x => x.DateOfBirth).IsRequired();
             b.Property(x => x.PhoneNumber).HasMaxLength(500).IsRequired();
             b.Property(x => x.Email).HasMaxLength(500);

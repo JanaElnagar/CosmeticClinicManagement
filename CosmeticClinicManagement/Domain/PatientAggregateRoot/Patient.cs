@@ -36,7 +36,7 @@ namespace CosmeticClinicManagement.Domain.PatientAggregateRoot
             
             if (string.IsNullOrWhiteSpace(email))
             {
-                throw new ArgumentException("Invalid email address.", nameof(email));
+                throw new ArgumentException("Email cannot be empty or null.", nameof(email));
             }
             if (string.IsNullOrWhiteSpace(phoneNumber))
             {
