@@ -13,7 +13,7 @@ namespace CosmeticClinicManagement.Pages.Stores.RawMaterials
         public UpdateRawMaterialDto Input { get; set; } = new();
 
         [BindProperty(SupportsGet = true)]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; }  // raw material ID
 
         [BindProperty(SupportsGet = true)]
         public Guid StoreId { get; set; }
@@ -28,7 +28,7 @@ namespace CosmeticClinicManagement.Pages.Stores.RawMaterials
             Id = id;
             StoreId = storeId;
 
-            var raw = await _storeAppService.GetRawMaterialAsync(id);
+            var raw = await _storeAppService.GetRawMaterialAsync(storeId, id);
             if (raw == null)
             {
                 return NotFound();
@@ -45,9 +45,10 @@ namespace CosmeticClinicManagement.Pages.Stores.RawMaterials
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid) return Page();
+            if (!ModelState.IsValid)
+                return Page();
 
-            await _storeAppService.UpdateRawMaterialAsync(Id, Input);
+            await _storeAppService.UpdateRawMaterialAsync(StoreId, Id, Input);
             return RedirectToPage("/Stores/Details", new { id = StoreId });
         }
     }
