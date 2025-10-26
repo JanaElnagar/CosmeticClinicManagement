@@ -33,15 +33,15 @@ public class CosmeticClinicManagementMenuContributor : IMenuContributor
         );
         context.Menu.AddItem(
             new ApplicationMenuItem(
-            "InventoryManagement",
-            l["Menu:InventoryManagement"],
-            icon: "fas fa-shopping-cart"
-            ).AddItem(
-            new ApplicationMenuItem(
-            "InventoryManagement.Stores",
-            l["Menu:Stores"],
-            url: "/Stores"
-            )
+                "InventoryManagement",
+                l["Menu:InventoryManagement"],
+                icon: "fas fa-shopping-cart"
+                ).AddItem(
+                new ApplicationMenuItem(
+                "InventoryManagement.Stores",
+                l["Menu:Stores"],
+                url: "/Stores"
+                )
             )
         );
 

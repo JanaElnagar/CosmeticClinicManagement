@@ -1,24 +1,23 @@
 using CosmeticClinicManagement.Services.Dtos.Store;
 using CosmeticClinicManagement.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CosmeticClinicManagement.Pages.Stores
 {
-    public class IndexModel : PageModel
+    public class DetailsModel : PageModel
     {
         private readonly IStoreAppService _storeAppService;
 
-        public List<StoreDto> Stores { get; set; } = new();
+        public StoreDto? Store { get; set; }
 
-        public IndexModel(IStoreAppService storeAppService)
+        public DetailsModel(IStoreAppService storeAppService)
         {
             _storeAppService = storeAppService;
         }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(Guid id)
         {
-            Stores = await _storeAppService.GetAllStoresAsync();
+            Store = await _storeAppService.GetAsync(id);
         }
     }
 }

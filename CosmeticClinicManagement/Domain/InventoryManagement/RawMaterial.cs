@@ -88,5 +88,15 @@ namespace CosmeticClinicManagement.Domain.InventoryManagement
 
             Price = newPrice;
         }
+        public void UpdateDetails(string name, string description, int quantity, decimal price, DateTime expiryDate)
+        {
+            ValidateParameters(name, description, quantity, price, expiryDate);
+
+            Name = name;
+            Description = description;
+            Quantity = quantity;
+            Price = price;
+            ExpiryDate = expiryDate;
+        }
     }
 }
