@@ -1,6 +1,6 @@
 ﻿using Volo.Abp.Application.Dtos;
 
-namespace CosmeticClinicManagement.Services.Dtos
+namespace CosmeticClinicManagement.Services.Dtos.Store
 {
     public class RawMaterialDto : EntityDto<Guid>
     {
