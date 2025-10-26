@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
+
 
 namespace CosmeticClinicManagement.Services.Dtos.Store
 {
