@@ -11,12 +11,10 @@ namespace CosmeticClinicManagement.Services
     public class StoreAppService : ApplicationService, IStoreAppService
     {
         private readonly IRepository<Store, Guid> _storeRepository;
-        private readonly IRepository<RawMaterial, Guid> _rawRepository;
 
-        public StoreAppService(IRepository<Store, Guid> storeRepository, IRepository<RawMaterial, Guid> rawRepository)
+        public StoreAppService(IRepository<Store, Guid> storeRepository)
         {
             _storeRepository = storeRepository;
-            _rawRepository = rawRepository;
         }
 
         public async Task<List<StoreDto>> GetAllStoresAsync()
@@ -24,28 +22,15 @@ namespace CosmeticClinicManagement.Services
             var q = await _storeRepository.GetQueryableAsync();
             var stores = await q.Include(s => s.RawMaterials).ToListAsync();
 
-            return stores.Select(s => new StoreDto
-            {
-                Id = s.Id,
-                Name = s.Name,
-                RawMaterials = s.RawMaterials.Select(r => new RawMaterialDto
-                {
-                    Id = r.Id,
-                    Name = r.Name,
-                    Description = r.Description,
-                    Quantity = r.Quantity,
-                    Price = r.Price,
-                    ExpiryDate = r.ExpiryDate,
-                    StoreId = r.StoreId
-                }).ToList()
-            }).ToList();
+            return stores.Select(MapToStoreDto).ToList();
         }
 
         public async Task<StoreDto> GetAsync(Guid id)
         {
             var q = await _storeRepository.GetQueryableAsync();
-            var store = await q.Include(s => s.RawMaterials).FirstOrDefaultAsync(s => s.Id == id) ?? await _storeRepository.GetAsync(id);
-
+            var store = await q.Include(s => s.RawMaterials)
+                               .FirstOrDefaultAsync(s => s.Id == id)
+                        ?? throw new UserFriendlyException("Store not found.");
             return MapToStoreDto(store);
         }
 
@@ -53,7 +38,6 @@ namespace CosmeticClinicManagement.Services
         {
             var store = new Store(Guid.NewGuid(), input.Name);
             await _storeRepository.InsertAsync(store, autoSave: true);
-
             return MapToStoreDto(store);
         }
 
@@ -62,8 +46,6 @@ namespace CosmeticClinicManagement.Services
             var store = await _storeRepository.GetAsync(id);
             store.ChangeName(input.Name);
             await _storeRepository.UpdateAsync(store, autoSave: true);
-            var q = await _storeRepository.GetQueryableAsync();
-            store = await q.Include(s => s.RawMaterials).FirstOrDefaultAsync(s => s.Id == id) ?? store;
             return MapToStoreDto(store);
         }
 
@@ -72,53 +54,75 @@ namespace CosmeticClinicManagement.Services
             await _storeRepository.DeleteAsync(id, autoSave: true);
         }
 
+        // ---------- RawMaterial-related methods (aggregate-based) ----------
+
         public async Task<List<RawMaterialDto>> GetRawMaterialsByStoreIdAsync(Guid storeId)
         {
-            var q = await _rawRepository.GetQueryableAsync();
-            var raws = await q.Where(r => r.StoreId == storeId).ToListAsync();
+            var q = await _storeRepository.GetQueryableAsync();
+            var store = await q.Include(s => s.RawMaterials)
+                               .FirstOrDefaultAsync(s => s.Id == storeId)
+                        ?? throw new UserFriendlyException("Store not found.");
 
-            return raws.Select(MapToRawDto).ToList();
+            return store.RawMaterials.Select(MapToRawDto).ToList();
         }
 
-        public async Task<RawMaterialDto> GetRawMaterialAsync(Guid id)
+        public async Task<RawMaterialDto> GetRawMaterialAsync(Guid storeId, Guid rawMaterialId)
         {
-            var raw = await _rawRepository.GetAsync(id);
+            var q = await _storeRepository.GetQueryableAsync();
+            var store = await q.Include(s => s.RawMaterials)
+                               .FirstOrDefaultAsync(s => s.Id == storeId)
+                        ?? throw new UserFriendlyException("Store not found.");
+
+            var raw = store.RawMaterials.FirstOrDefault(r => r.Id == rawMaterialId)
+                      ?? throw new UserFriendlyException("Raw material not found.");
+
             return MapToRawDto(raw);
         }
 
         public async Task<RawMaterialDto> CreateRawMaterialAsync(CreateRawMaterialDto input)
         {
-            var raw = new RawMaterial(Guid.NewGuid(), input.Name, input.Description, input.Quantity, input.Price, input.ExpiryDate, input.StoreId);
-            await _rawRepository.InsertAsync(raw, autoSave: true);
+            var q = await _storeRepository.GetQueryableAsync();
+            var store = await q.Include(s => s.RawMaterials)
+                               .FirstOrDefaultAsync(s => s.Id == input.StoreId)
+                        ?? throw new UserFriendlyException("Store not found.");
+
+            var raw = new RawMaterial(Guid.NewGuid(), input.Name, input.Description, input.Quantity, input.Price, input.ExpiryDate, store.Id);
+            store.RawMaterials.Add(raw);
+
+            await _storeRepository.UpdateAsync(store, autoSave: true);
             return MapToRawDto(raw);
         }
 
-        public async Task<RawMaterialDto> UpdateRawMaterialAsync(Guid id, UpdateRawMaterialDto input)
+        public async Task<RawMaterialDto> UpdateRawMaterialAsync(Guid storeId, Guid rawMaterialId, UpdateRawMaterialDto input)
         {
-            var q = await _rawRepository.GetQueryableAsync();
-            var raw = await q.FirstOrDefaultAsync(r => r.Id == id);
-            if (raw == null)
-            {
-                throw new UserFriendlyException("Raw material not found.");
-            }
+            var q = await _storeRepository.GetQueryableAsync();
+            var store = await q.Include(s => s.RawMaterials)
+                               .FirstOrDefaultAsync(s => s.Id == storeId)
+                        ?? throw new UserFriendlyException("Store not found.");
+
+            var raw = store.RawMaterials.FirstOrDefault(r => r.Id == rawMaterialId)
+                      ?? throw new UserFriendlyException("Raw material not found.");
 
             raw.UpdateDetails(input.Name, input.Description, input.Quantity, input.Price, input.ExpiryDate);
-            await _rawRepository.UpdateAsync(raw, autoSave: true);
+            await _storeRepository.UpdateAsync(store, autoSave: true);
             return MapToRawDto(raw);
         }
 
-        public async Task DeleteRawMaterialAsync(Guid id)
+        public async Task DeleteRawMaterialAsync(Guid storeId, Guid rawMaterialId)
         {
-            var q = await _rawRepository.GetQueryableAsync();
-            var raw = await q.FirstOrDefaultAsync(r => r.Id == id);
-            if (raw == null)
-            {
-                throw new UserFriendlyException("Raw material not found.");
-            }
+            var q = await _storeRepository.GetQueryableAsync();
+            var store = await q.Include(s => s.RawMaterials)
+                               .FirstOrDefaultAsync(s => s.Id == storeId)
+                        ?? throw new UserFriendlyException("Store not found.");
 
-            await _rawRepository.DeleteAsync(id, autoSave: true);
+            var raw = store.RawMaterials.FirstOrDefault(r => r.Id == rawMaterialId)
+                      ?? throw new UserFriendlyException("Raw material not found.");
+
+            store.RawMaterials.Remove(raw);
+            await _storeRepository.UpdateAsync(store, autoSave: true);
         }
 
+        // ---------- Mapping ----------
         private static StoreDto MapToStoreDto(Store s) =>
             new StoreDto
             {
