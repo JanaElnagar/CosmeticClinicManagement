@@ -30,7 +30,9 @@ public class CosmeticClinicManagementMenuContributor : IMenuContributor
             )
         );
 
-        context.Menu.AddItem(
+        if (await context.IsGrantedAsync("StoreManagement") && await context.IsGrantedAsync("RawMaterialManagement"))
+        {
+            context.Menu.AddItem(
             new ApplicationMenuItem(
                  "InventoryManagement",
                 l["Menu:InventoryManagement"],
@@ -43,6 +45,7 @@ public class CosmeticClinicManagementMenuContributor : IMenuContributor
                 )
             )
         );
+        }
 
         if (await context.IsGrantedAsync("PatientManagement"))
         {
