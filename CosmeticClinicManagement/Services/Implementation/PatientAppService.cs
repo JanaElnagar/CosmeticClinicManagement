@@ -20,10 +20,9 @@ namespace CosmeticClinicManagement.Services.Implementation
             _guidGenerator = guidGenerator;
         }
 
-        public async Task<PatientDto> CreateAsync(PatientDto input)
+        public async Task<PatientDto> CreateAsync(CreateUpdatePatientDto input)
         {
-            input.Id = _guidGenerator.Create();
-            var patient = ObjectMapper.Map<PatientDto, Patient>(input);
+            var patient = ObjectMapper.Map<CreateUpdatePatientDto, Patient>(input);
             patient = await _patientRepository.InsertAsync(patient, autoSave: true);
             return ObjectMapper.Map<Patient, PatientDto>(patient);
         }
@@ -57,13 +56,8 @@ namespace CosmeticClinicManagement.Services.Implementation
             );
         }
 
-        public async Task UpdateAsync(Guid id, PatientDto input)
+        public async Task UpdateAsync(Guid id, CreateUpdatePatientDto input)
         {
-            if (id != input.Id)
-            {
-                throw new ArgumentException("The ID in the URL does not match the ID in the body.");
-            }
-
             var patient = await _patientRepository.FindAsync(id);
             ObjectMapper.Map(input, patient);
             await _patientRepository.UpdateAsync(patient, autoSave: true);

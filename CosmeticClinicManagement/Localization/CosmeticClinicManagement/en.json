@@ -5,6 +5,14 @@
     "Welcome_Text": "This is a minimalist, single layer application startup template for the ABP Framework.",
     "Menu:Home": "Home",
     "Menu:PatientsManagement": "Patients Management",
-    "Menu:Patients": "Patients"
+    "Menu:Patients": "Patients",
+    "FirstName": "First Name",
+    "LastName": "Last Name",
+    "DateOfBirth": "Date of Birth",
+    "PhoneNumber": "Phone Number",
+    "Email": "Email",
+    "NewPatient": "Register new patient",
+    "PatientDeletionConfirmationMessage": "Are you sure you want to delete this patient?",
+    "SuccessfullyDeletedPatient": "Patient deleted successfully."
   }
 }

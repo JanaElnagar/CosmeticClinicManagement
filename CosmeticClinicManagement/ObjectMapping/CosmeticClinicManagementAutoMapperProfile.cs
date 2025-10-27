@@ -10,5 +10,8 @@ public class CosmeticClinicManagementAutoMapperProfile : Profile
     {
         CreateMap<PatientDto, Patient>();
         CreateMap<Patient, PatientDto>();
+        CreateMap<CreateUpdatePatientDto, Patient>();
+        CreateMap<Patient, CreateUpdatePatientDto>();
+        CreateMap<PatientDto, CreateUpdatePatientDto>();
     }
 }

@@ -1,27 +1,29 @@
 ﻿@page
 @model CosmeticClinicManagement.Pages.Patients.IndexModel
-@addTagHelper *, Volo.Abp.AspNetCore.Mvc.UI.Bootstrap
+@using Microsoft.Extensions.Localization
+@using CosmeticClinicManagement.Localization
+@inject IStringLocalizer<CosmeticClinicManagementResource> L
 
-<h1>Patients</h1>
-
-<p>
-	<a asp-page="Create" class="btn btn-primary">Add New Patient</a>
-</p>
-
-@foreach (var patient in Model.Patients)
+@section scripts
 {
-	<div class="card mb-3">
-		<div class="card-body">
-			<h5 class="card-title">@patient.FirstName @patient.LastName</h5>
-			<p class="card-text">
-				<strong>Date of Birth:</strong> @patient.DateOfBirth.ToShortDateString()<br />
-				<strong>Phone number:</strong> @patient.PhoneNumber <br />
-				<strong>Email:</strong> @patient.Email
-			</p>
-			<a asp-page="Edit" asp-route-id="@patient.Id" class="btn btn-secondary">Edit</a>
-			<a asp-page="Details" asp-route-id="@patient.Id" class="btn btn-info">Details</a>
-			<a asp-page="Delete" asp-route-id="@patient.Id" class="btn btn-danger">Delete</a>
-		</div>
-	</div>
-
+	<script src="~/Pages/Patients/Index.cshtml.js"></script>
 }
+
+<abp-card>
+	<abp-card-header>
+		<abp-row>
+			<abp-column size-md="_6">
+				<abp-card-title>@L["Menu:Patients"]</abp-card-title>
+			</abp-column>
+			<abp-column size-md="_6" class="text-end">
+				<abp-button id="NewPatientButton"
+				text="@L["NewPatient"].Value"
+				icon="plus"
+				button-type="Primary"/>
+			</abp-column>
+		</abp-row>
+	</abp-card-header>
+	<abp-card-body>
+		<abp-table id="PatientsTable" striped-rows="true" />
+	</abp-card-body>
+</abp-card>

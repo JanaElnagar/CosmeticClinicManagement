@@ -1,30 +1,36 @@
+using AutoMapper.Internal.Mappers;
 using CosmeticClinicManagement.Services.Dtos;
 using CosmeticClinicManagement.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
 
 namespace CosmeticClinicManagement.Pages.Patients
 {
-    public class EditModel(IPatientAppService patientAppService) : PageModel
+    public class EditModel(IPatientAppService patientAppService) : AbpPageModel
     {
         private readonly IPatientAppService _patientAppService = patientAppService;
 
+        [HiddenInput]
+        [BindProperty(SupportsGet = true)]
+        public Guid Id { get; set; }
+
         [BindProperty]
-        public PatientDto Patient { get; set; }
+        public CreateUpdatePatientDto Patient { get; set; }
 
         public async Task OnGetAsync(Guid Id)
         {
-            Patient = await _patientAppService.GetAsync(Id);
+            var patientDto = await _patientAppService.GetAsync(Id);
+            Patient = ObjectMapper.Map<PatientDto, CreateUpdatePatientDto>(patientDto);
         }
 
-        public async Task<IActionResult> OnPostAsync(Guid id)
+        public async Task OnPostAsync(Guid id)
         {
             if (!ModelState.IsValid)
             {
-                return Page();
+                throw new Exception("Invalid patient data.");
             }
             await _patientAppService.UpdateAsync(id, Patient);
-            return RedirectToPage("Index");
         }
     }
 }

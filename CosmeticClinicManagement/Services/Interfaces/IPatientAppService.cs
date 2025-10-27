@@ -9,8 +9,8 @@ namespace CosmeticClinicManagement.Services.Interfaces
     {
         Task<PagedResultDto<PatientDto>> GetListAsync(PagedAndSortedResultRequestDto input);
         Task<PatientDto> GetAsync(Guid id);
-        Task<PatientDto> CreateAsync(PatientDto input);
-        Task UpdateAsync(Guid id, PatientDto input);
+        Task<PatientDto> CreateAsync(CreateUpdatePatientDto input);
+        Task UpdateAsync(Guid id, CreateUpdatePatientDto input);
         Task DeleteAsync(Guid id);
 
         Task<List<PatientDto>> GetAllPatientsAsync();
