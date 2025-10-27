@@ -5,9 +5,12 @@ using Volo.Abp.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using CosmeticClinicManagement.Services.Dtos.Store;
 using Volo.Abp;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CosmeticClinicManagement.Services
 {
+    [Authorize("StoreManagement")]
+    [Authorize("RawMaterialManagement")]
     public class StoreAppService : ApplicationService, IStoreAppService
     {
         private readonly IRepository<Store, Guid> _storeRepository;
