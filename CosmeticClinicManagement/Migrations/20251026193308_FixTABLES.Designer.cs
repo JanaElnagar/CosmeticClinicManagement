@@ -4,6 +4,7 @@ using CosmeticClinicManagement.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using Volo.Abp.EntityFrameworkCore;
 namespace CosmeticClinicManagement.Migrations
 {
     [DbContext(typeof(CosmeticClinicManagementDbContext))]
-    partial class CosmeticClinicManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251026193308_FixTABLES")]
+    partial class FixTABLES
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

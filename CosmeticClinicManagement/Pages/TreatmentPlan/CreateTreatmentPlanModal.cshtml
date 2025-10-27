@@ -1,0 +1,20 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@using CosmeticClinicManagement.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@model CosmeticClinicManagement.Pages.TreatmentPlan.CreateTreatmentPlanModalModel
+@inject IHtmlLocalizer<CosmeticClinicManagementResource> L
+@{
+ Layout = null;
+}
+<abp-dynamic-form abp-model="TreatmentPlan"
+ asp-page="/TreatmentPlan/CreateTreatmentPlanModal">
+ <abp-modal>
+ <abp-modal-header title="@L["NewTreatmentPlan"].Value"></abp-modal-header>
+ <abp-modal-body>
+ <abp-form-content />
+ </abp-modal-body>
+ <abp-modal-footer buttons="@(AbpModalButtons.
+Cancel|AbpModalButtons.Save)"></abp-modal-footer>
+ </abp-modal>
+</abp-dynamic-form>

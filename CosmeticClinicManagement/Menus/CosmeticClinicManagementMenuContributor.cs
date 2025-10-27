@@ -40,7 +40,19 @@ public class CosmeticClinicManagementMenuContributor : IMenuContributor
         {
             administration.TryRemoveMenuItem(TenantManagementMenuNames.GroupName);
         }
-
+        context.Menu.AddItem(
+         new ApplicationMenuItem(
+         "TreatmentPlan",
+         l["Menu:TreatmentPlan"],
+         icon: "fas fa-shopping-cart"
+         ).AddItem(
+         new ApplicationMenuItem(
+         "CosmeticClinicManagement.TreatmentPlans",
+         l["Menu:TreatmentPlans"],
+         url: "/TreatmentPlan"
+         )
+         )
+        );
         return Task.CompletedTask;
     }
 }

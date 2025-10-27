@@ -1,0 +1,22 @@
+﻿@page
+@using CosmeticClinicManagement.Pages.TreatmentPlan
+@using Microsoft.Extensions.Localization
+@using CosmeticClinicManagement.Localization
+@model IndexModel
+@inject IStringLocalizer<CosmeticClinicManagementResource> L
+@section scripts
+{
+ <abp-script src="/Pages/TreatmentPlan/index.js" />
+}
+<abp-card>
+ <abp-card-header>
+ <h2>@L["Menu:TreatmentPlans"]</h2>
+ </abp-card-header>
+ <abp-card-body>
+ <abp-table id="TreatmentPlansTable" striped-rows="true" />
+ </abp-card-body>
+</abp-card>
+
+
+
+

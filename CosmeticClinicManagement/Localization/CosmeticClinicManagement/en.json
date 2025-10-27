@@ -1,8 +1,22 @@
 {
   "culture": "en",
   "texts": {
-     "AppName": "CosmeticClinicManagement",
+    "AppName": "CosmeticClinicManagement",
     "Welcome_Text": "This is a minimalist, single layer application startup template for the ABP Framework.",
-    "Menu:Home": "Home"
-  }
+    "Menu:Home": "Home",
+    "Menu:TreatmentPlan": "Treatment plan",
+    "Menu:TreatmentPlans": "TreatmentPlans",
+    "DoctorId": "Doctor Id",
+    "PatientId": "Patient Id",
+
+    "Status": "Status",
+    "Enum:Status:0": "Planned",
+    "Enum:Status:1": "Cancelled",
+    "Enum:Status:2": "In Progress",
+    "Enum:Status:3": "Completed",
+
+    "SessionDate":  "Session date",
+    "UsedMaterials": "used materials" ,
+  "Notes":  "Notes" }
 }
+
