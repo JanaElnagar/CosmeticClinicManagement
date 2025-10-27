@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ValueGeneration;
-using Volo.Abp.Domain.Entities.Auditing;
-using Volo.Abp.Guids;
+﻿using Volo.Abp.Domain.Entities.Auditing;
 
 namespace CosmeticClinicManagement.Domain.ClinicManagement
 {

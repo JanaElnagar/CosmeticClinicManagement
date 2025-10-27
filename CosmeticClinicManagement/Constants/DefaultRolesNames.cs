@@ -7,14 +7,11 @@ namespace CosmeticClinicManagement.Constants
         public static readonly string Admin = "Admin";
         public static readonly string Receptionist = "Receptionist";
         public static readonly string Doctor = "Doctor";
-        public static readonly string Patient = "Patient";
 
-        public static readonly string[] AllRoles = new[]
-        {
+        public static readonly string[] AllRoles = [
             Admin,
             Receptionist,
-            Doctor,
-            Patient
-        };
+            Doctor
+        ];
     }
 }

@@ -2,12 +2,29 @@
   "culture": "en",
   "texts": {
     "AppName": "CosmeticClinicManagement",
+    "Welcome_Text": "This is a minimalist, single layer application startup template for the ABP Framework.",
+    "Menu:Home": "Home",
+    "Menu:PatientsManagement": "Patients Management",
+    "Menu:Patients": "Patients",
+    "FirstName": "First Name",
+    "LastName": "Last Name",
+    "DateOfBirth": "Date of Birth",
+    "PhoneNumber": "Phone Number",
+    "Email": "Email",
+    "NewPatient": "Register new patient",
+    "PatientDeletionConfirmationMessage": "Are you sure you want to delete this patient?",
+    "SuccessfullyDeletedPatient": "Patient deleted successfully.",
+    "PatientManagement": "Patient Management",
+    "Permission:PatientManagement": "Manage Patients",
+    "Permission:CreatePatient": "Create Patient",
+    "Permission:EditPatient": "Edit Patient",
+    "Permission:DeletePatient": "Delete Patient",
+    "Permission:ViewPatient": "View Patient"
     "DisplayName": "Cosmetic Clinic Management",
     "Welcome_Text": "This is a minimalist, single layer application startup template for the ABP Framework.",
     "Menu:Home": "Home",
     "Menu:InventoryManagement": "Inventory Management",
     "Menu:Stores": "Stores",
     "CosmeticClinicManagement:RawMaterial:DescriptionEmpty": "Description cannot be empty."
-
   }
 }
