@@ -2,12 +2,14 @@
 using CosmeticClinicManagement.Domain.PatientAggregateRoot;
 using CosmeticClinicManagement.Services.Dtos;
 using CosmeticClinicManagement.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Guids;
 
 namespace CosmeticClinicManagement.Services.Implementation
 {
+    [Authorize("PatientManagement")]
     public class PatientAppService : ApplicationService, IPatientAppService
     {
         private readonly IPatientRepository _patientRepository;

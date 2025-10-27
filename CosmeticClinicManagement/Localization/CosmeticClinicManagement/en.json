@@ -13,6 +13,12 @@
     "Email": "Email",
     "NewPatient": "Register new patient",
     "PatientDeletionConfirmationMessage": "Are you sure you want to delete this patient?",
-    "SuccessfullyDeletedPatient": "Patient deleted successfully."
+    "SuccessfullyDeletedPatient": "Patient deleted successfully.",
+    "PatientManagement": "Patient Management",
+    "Permission:PatientManagement": "Manage Patients",
+    "Permission:CreatePatient": "Create Patient",
+    "Permission:EditPatient": "Edit Patient",
+    "Permission:DeletePatient": "Delete Patient",
+    "Permission:ViewPatient": "View Patient"
   }
 }
