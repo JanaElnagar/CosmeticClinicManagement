@@ -29,6 +29,19 @@ public class CosmeticClinicManagementMenuContributor : IMenuContributor
                 order: 0
             )
         );
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                "InventoryManagement",
+                l["Menu:InventoryManagement"],
+                icon: "fas fa-shopping-cart"
+                ).AddItem(
+                new ApplicationMenuItem(
+                "InventoryManagement.Stores",
+                l["Menu:Stores"],
+                url: "/Stores"
+                )
+            )
+        );
 
         if (await context.IsGrantedAsync("PatientManagement"))
         {

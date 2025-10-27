@@ -23,6 +23,7 @@ public class CosmeticClinicManagementDbContext : AbpDbContext<CosmeticClinicMana
 
     public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
     public DbSet<Store> Stores { get; set; }
+    //public DbSet<RawMaterial> RawMaterials { get; set; }
     public DbSet<Patient> Patients { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
