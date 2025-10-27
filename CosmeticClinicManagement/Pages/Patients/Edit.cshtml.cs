@@ -1,8 +1,6 @@
-using AutoMapper.Internal.Mappers;
 using CosmeticClinicManagement.Services.Dtos;
 using CosmeticClinicManagement.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
 
 namespace CosmeticClinicManagement.Pages.Patients
@@ -26,10 +24,7 @@ namespace CosmeticClinicManagement.Pages.Patients
 
         public async Task OnPostAsync(Guid id)
         {
-            if (!ModelState.IsValid)
-            {
-                throw new Exception("Invalid patient data.");
-            }
+            ValidateModel();
             await _patientAppService.UpdateAsync(id, Patient);
         }
     }

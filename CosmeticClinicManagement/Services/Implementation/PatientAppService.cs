@@ -4,7 +4,6 @@ using CosmeticClinicManagement.Services.Dtos;
 using CosmeticClinicManagement.Services.Interfaces;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
-using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Guids;
 
 namespace CosmeticClinicManagement.Services.Implementation
@@ -12,12 +11,10 @@ namespace CosmeticClinicManagement.Services.Implementation
     public class PatientAppService : ApplicationService, IPatientAppService
     {
         private readonly IPatientRepository _patientRepository;
-        private readonly IGuidGenerator _guidGenerator;
 
         public PatientAppService(IPatientRepository patientRepository, IGuidGenerator guidGenerator)
         {
             _patientRepository = patientRepository;
-            _guidGenerator = guidGenerator;
         }
 
         public async Task<PatientDto> CreateAsync(CreateUpdatePatientDto input)

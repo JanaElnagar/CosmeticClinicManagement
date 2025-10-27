@@ -1,5 +1,4 @@
-﻿using CosmeticClinicManagement.Domain.PatientAggregateRoot;
-using CosmeticClinicManagement.Services.Dtos;
+﻿using CosmeticClinicManagement.Services.Dtos;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 

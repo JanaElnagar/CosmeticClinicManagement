@@ -1,12 +1,11 @@
 using CosmeticClinicManagement.Services.Dtos;
 using CosmeticClinicManagement.Services.Interfaces;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
 
 namespace CosmeticClinicManagement.Pages.Patients
 {
-    public class CreateModel(IPatientAppService patientAppService) : PageModel
+    public class CreateModel(IPatientAppService patientAppService) : AbpPageModel
     {
         private readonly IPatientAppService _patientAppService = patientAppService;
 
@@ -18,10 +17,7 @@ namespace CosmeticClinicManagement.Pages.Patients
 
         public async Task OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                throw new Exception("Invalid patient data.");
-            }
+            ValidateModel();
             await _patientAppService.CreateAsync(Patient);
         }
 
