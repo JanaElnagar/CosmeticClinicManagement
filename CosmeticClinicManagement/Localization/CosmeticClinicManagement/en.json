@@ -19,10 +19,8 @@
     "Permission:CreatePatient": "Create Patient",
     "Permission:EditPatient": "Edit Patient",
     "Permission:DeletePatient": "Delete Patient",
-    "Permission:ViewPatient": "View Patient"
+    "Permission:ViewPatient": "View Patient",
     "DisplayName": "Cosmetic Clinic Management",
-    "Welcome_Text": "This is a minimalist, single layer application startup template for the ABP Framework.",
-    "Menu:Home": "Home",
     "Menu:InventoryManagement": "Inventory Management",
     "Menu:Stores": "Stores",
     "CosmeticClinicManagement:RawMaterial:DescriptionEmpty": "Description cannot be empty."
