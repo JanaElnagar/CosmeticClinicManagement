@@ -11,5 +11,9 @@ namespace CosmeticClinicManagement.Services.Interfaces
 input);
 
         Task CreateAsync(CreateUpdateTreatmentPlanDto input);
+        Task<TreatmentPlanDto> GetAsync(Guid id);
+        Task UpdateAsync(Guid id, CreateUpdateTreatmentPlanDto input);
+        Task DeleteAsync(Guid id);
+
     }
 }

@@ -10,13 +10,22 @@
     "PatientId": "Patient Id",
 
     "Status": "Status",
-    "Enum:Status:0": "Planned",
-    "Enum:Status:1": "Cancelled",
-    "Enum:Status:2": "In Progress",
-    "Enum:Status:3": "Completed",
+    "Enum:Status:0": "Ongoing",
 
-    "SessionDate":  "Session date",
-    "UsedMaterials": "used materials" ,
-  "Notes":  "Notes" }
+    "Enum:Status:1": "Closed",
+
+    //"Enum:Status:0": "Planned",
+    //"Enum:Status:1": "Cancelled",
+    //"Enum:Status:2": "In Progress",
+    //"Enum:Status:3": "Completed",
+
+    "Sessions": "Sessions",
+    "SessionDate": "Session date",
+    "UsedMaterials": "used materials",
+    "Notes": "Notes",
+    "NewTreatmentPlan": "New Treatment Plan",
+    "ProductDeletionConfirmationMessage": "Are you sure to delete this book: {0}",
+    "SuccessfullyDeleted": "Successfully deleted!"
+  }
 }
 

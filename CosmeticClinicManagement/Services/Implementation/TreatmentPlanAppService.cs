@@ -56,13 +56,7 @@ namespace CosmeticClinicManagement.Services.Implementation
 
         public async Task CreateAsync(CreateUpdateTreatmentPlanDto input)
         {
-           // var treatmentPlan = ObjectMapper.Map<CreateUpdateTreatmentPlanDto, TreatmentPlan>
-           //(input);
-           // if (input.Sessions != null)
-           // {
-           //     treatmentPlan.Sessions = input.Sessions.Select(
-           //         s=> ObjectMapper.Map<SessionDto, Session>(s)).ToList();
-           // }
+
             await _treatmentPlanRepository.InsertAsync(
             ObjectMapper.Map<CreateUpdateTreatmentPlanDto, TreatmentPlan>
            (input)
@@ -79,19 +73,19 @@ namespace CosmeticClinicManagement.Services.Implementation
             );
         }
 
-        //public async Task<TreatmentPlanDto> GetAsync(Guid id)
-        //{
-        //    return ObjectMapper.Map<Product, ProductDto>
-        //   (await _productRepository
-        //    .GetAsync(id));
-        //}
+        public async Task<TreatmentPlanDto> GetAsync(Guid id)
+        {
+            return ObjectMapper.Map<TreatmentPlan, TreatmentPlanDto>
+           (await _treatmentPlanRepository
+            .GetAsync(id));
+        }
 
-        //public async Task UpdateAsync(Guid id, CreateUpdateProductDto input)
-        //{
-        //    var product = await _productRepository.GetAsync(id);
-        //    ObjectMapper.Map<CreateUpdateProductDto, Product>
-        //   (input, product);
-        //}
+        public async Task UpdateAsync(Guid id, CreateUpdateTreatmentPlanDto input)
+        {
+            var treatmentPlan = await _treatmentPlanRepository.GetAsync(id);
+            ObjectMapper.Map<CreateUpdateTreatmentPlanDto, TreatmentPlan>
+           (input, treatmentPlan);
+        }
 
 
         public async Task DeleteAsync(Guid id)

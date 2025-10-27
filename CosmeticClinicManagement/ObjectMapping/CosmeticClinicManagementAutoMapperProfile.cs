@@ -22,5 +22,7 @@ public class CosmeticClinicManagementAutoMapperProfile : Profile
         CreateMap<CreateUpdateSessionDto, Session>();
         CreateMap<Session, CreateUpdateSessionDto>();
         CreateMap<CreateEditTreatmentPlanViewModel, CreateUpdateTreatmentPlanDto>();
+        CreateMap<TreatmentPlanDto, CreateEditTreatmentPlanViewModel>();
+
     }
 }
