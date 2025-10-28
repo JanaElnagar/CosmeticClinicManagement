@@ -2,9 +2,9 @@
 {
     public class DashboardStatsDto
     {
-        public int TotalPatients { get; set; }
-        public int TotalStaff { get; set; }
-        public int TotalSessions { get; set; }
-        public int LowStockMaterials { get; set; }
+        public long TotalPatients { get; set; }
+        public long TotalStaff { get; set; }
+        public long TotalSessions { get; set; }
+        public long LowStockMaterials { get; set; }
     }
 }
