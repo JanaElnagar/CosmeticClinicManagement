@@ -2,8 +2,11 @@
 {
     public class DoctorDashboardDto
     {
-        public string DoctorName { get; set; } = string.Empty;
-        public List<string> TodaySessions { get; set; } = new();
-        public int PendingTreatmentPlans { get; set; }
+        public string DoctorName { get; set; }
+        public int CompletedSessionsCount { get; set; }
+        public int TodaySessionsCount { get; set; }
+        public int PlannedSessionsCount { get; set; }
+        public int PatientsCount { get; set; }
+        public List<SessionSummaryDto> TodaySessionsSummary { get; set; }
     }
 }

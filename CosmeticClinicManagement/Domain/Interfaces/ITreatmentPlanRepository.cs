@@ -5,5 +5,6 @@ namespace CosmeticClinicManagement.Domain.Interfaces
 {
     public interface ITreatmentPlanRepository : IRepository<TreatmentPlan, Guid>
     {
+        Task<List<TreatmentPlan>> GetTreatmentPlansByDoctorIdAsync(Guid doctorId);
     }
 }
