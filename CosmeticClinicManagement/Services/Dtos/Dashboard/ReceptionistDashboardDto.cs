@@ -2,8 +2,10 @@
 {
     public class ReceptionistDashboardDto
     {
-        public int NewPatientsThisWeek { get; set; }
-        public int UpcomingAppointments { get; set; }
+        public int TotalPatients { get; set; }
+        public int TotalTreatmentPlans { get; set; }
+        public int UpcomingSessions { get; set; }
+        public int CompletedSessions { get; set; }
         public int CancelledSessions { get; set; }
     }
 }

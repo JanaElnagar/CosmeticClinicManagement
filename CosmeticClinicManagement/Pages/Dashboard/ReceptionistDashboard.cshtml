@@ -1,0 +1,66 @@
+﻿<div class="row" id="receptionist-dashboard">
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h4 id="totalPatients">--</h4>
+                <p>Registered Patients</p>
+            </div>
+        </div>
+    </div>
+
+     <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h4 id="totalTreatmentPlans">--</h4>
+                <p>Active Treatment Plans</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h4 id="upcomingSessions">--</h4>
+                <p>Upcoming Sessions</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h4 id="completedSessions">--</h4>
+                <p>Completed Sessions</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h4 id="cancelledSessions">--</h4>
+                <p>Cancelled Sessions</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/api/app/receptionist-dashboard/summary',
+            type: 'GET',
+            success: function (data) {
+                $('#totalPatients').text(data.totalPatients);
+                $('#totalTreatmentPlans').text(data.totalTreatmentPlans);
+                $('#upcomingSessions').text(data.upcomingSessions);
+                $('#completedSessions').text(data.completedSessions);
+                $('#cancelledSessions').text(data.cancelledSessions);
+            },
+            error: function (xhr, status, error) {
+                console.error('Failed to load receptionist dashboard data:', error);
+            }
+        });
+    });
+</script>

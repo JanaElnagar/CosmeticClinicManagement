@@ -1,58 +1,73 @@
 ﻿using CosmeticClinicManagement.Domain.ClinicManagement;
-using CosmeticClinicManagement.Domain.InventoryManagement;
 using CosmeticClinicManagement.Domain.PatientAggregateRoot;
 using CosmeticClinicManagement.Services.Dtos.Dashboard;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
-using Volo.Abp.Users;
+using Volo.Abp.Identity;
 
-namespace CosmeticClinicManagement.Services.Dashboard
+namespace CosmeticClinicManagement.Services.Implementation
 {
-    public class AdminDashboardAppService : DashboardAppService
+    public class AdminDashboardAppService : ApplicationService
     {
-        private readonly IRepository<Patient, Guid> _patients;
-        private readonly IRepository<Session, Guid> _sessions;
-        private readonly IRepository<RawMaterial, Guid> _materials;
-        private readonly IRepository<Store, Guid> _stores;
+        private readonly IRepository<Patient, Guid> _patientRepository;
+        private readonly IRepository<TreatmentPlan, Guid> _treatmentPlanRepository;
+        private readonly IdentityUserManager _userManager;
 
         public AdminDashboardAppService(
-            IRepository<Patient, Guid> patients,
-            IRepository<Session, Guid> sessions,
-            IRepository<RawMaterial, Guid> materials,
-            IRepository<Store, Guid> stores,
-            ICurrentUser currentUser
-        ) : base(currentUser)
+            IRepository<Patient, Guid> patientRepository,
+            IRepository<TreatmentPlan, Guid> treatmentPlanRepository,
+            IdentityUserManager userManager)
         {
-            _patients = patients;
-            _sessions = sessions;
-            _materials = materials;
-            _stores = stores;
+            _patientRepository = patientRepository;
+            _treatmentPlanRepository = treatmentPlanRepository;
+            _userManager = userManager;
         }
 
-        public async Task<DashboardStatsDto> GetStatsAsync()
+        public async Task<AdminDashboardDto> GetDashboardDataAsync()
         {
-            return new DashboardStatsDto
+            try
             {
-                TotalPatients = await _patients.GetCountAsync(),
-                TotalSessions = await _sessions.GetCountAsync(),
-                LowStockMaterials = await _materials.CountAsync(x => x.Quantity < 5),
-                TotalStaff = 10 // optional: query Identity users instead
-            };
-        }
+                var totalPatients = await _patientRepository.GetCountAsync();
 
-        public async Task<DashboardChartDto> GetSessionsTrendAsync()
-        {
-            var sessions = await _sessions.GetListAsync();
-            var grouped = sessions
-                .GroupBy(s => s.CreationTime.Date)
-                .Select(g => new { Date = g.Key, Count = g.Count() })
-                .OrderBy(x => x.Date)
-                .ToList();
+                // Count users in the "Doctor" role
+                var allUsers = await _userManager.Users.ToListAsync();
+                var totalDoctors = 0;
+                foreach (var user in allUsers)
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    if (roles.Contains("Doctor"))
+                        totalDoctors++;
+                }
 
-            return new DashboardChartDto
+                var activePlans = await _treatmentPlanRepository.CountAsync(tp => tp.Status == TreatmentPlanStatus.Ongoing);
+                var closedPlans = await _treatmentPlanRepository.CountAsync(tp => tp.Status == TreatmentPlanStatus.Closed);
+
+                // Example: revenue estimation (adjust as needed)
+                decimal totalRevenue = (activePlans * 400) + (closedPlans * 750);
+
+                return new AdminDashboardDto
+                {
+                    TotalPatients = totalPatients,
+                    TotalDoctors = totalDoctors,
+                    ActiveTreatmentPlans = activePlans,
+                    ClosedTreatmentPlans = closedPlans,
+                    TotalRevenue = totalRevenue
+                };
+            }
+            catch (Exception ex)
             {
-                Labels = grouped.Select(x => x.Date.ToString("MMM dd")).ToList(),
-                Values = grouped.Select(x => x.Count).ToList()
-            };
-        }
+                Logger.LogError(ex, "Error while fetching admin dashboard data.");
+                return new AdminDashboardDto
+                {
+                    TotalPatients = 0,
+                    TotalDoctors = 0,
+                    ActiveTreatmentPlans = 0,
+                    ClosedTreatmentPlans = 0,
+                    TotalRevenue = 0
+                };
+
+       }    }
     }
 }

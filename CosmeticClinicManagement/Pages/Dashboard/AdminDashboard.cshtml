@@ -1,0 +1,102 @@
+﻿@model dynamic 
+
+<div class="container mt-4">
+    <h2 class="mb-4">Admin Dashboard</h2>
+
+    <div id="dashboard-loading" class="text-center mt-4">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div id="dashboard-content" style="display:none;">
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h6>Total Patients</h6>
+                        <h2 id="totalPatients">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h6>Total Doctors</h6>
+                        <h2 id="totalDoctors">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h6>Active Plans</h6>
+                        <h2 id="activePlans">0</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h6>Closed Plans</h6>
+                        <h2 id="closedPlans">0</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-6 mx-auto">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="text-center">Treatment Plans Overview</h5>
+                        <canvas id="plansChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/api/dashboard/admin/stats',
+            type: 'GET',
+            success: function (data) {
+                $('#totalPatients').text(data.totalPatients);
+                $('#totalDoctors').text(data.totalDoctors);
+                $('#activePlans').text(data.activeTreatmentPlans);
+                $('#closedPlans').text(data.closedTreatmentPlans);
+
+                $('#dashboard-loading').hide();
+                $('#dashboard-content').show();
+
+                const ctx = document.getElementById('plansChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Active', 'Closed'],
+                        datasets: [{
+                            label: 'Treatment Plans',
+                            data: [data.activeTreatmentPlans, data.closedTreatmentPlans],
+                            backgroundColor: ['#007bff', '#28a745']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            },
+            error: function () {
+                $('#dashboard-loading').html('<div class="alert alert-danger mt-3">Failed to load data.</div>');
+            }
+        });
+    });
+</script>
