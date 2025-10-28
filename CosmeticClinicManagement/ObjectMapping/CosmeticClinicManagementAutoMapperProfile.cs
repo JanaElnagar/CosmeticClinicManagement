@@ -8,7 +8,8 @@ public class CosmeticClinicManagementAutoMapperProfile : Profile
 {
     public CosmeticClinicManagementAutoMapperProfile()
     {
-        CreateMap<PatientDto, Patient>();
-        CreateMap<Patient, PatientDto>();
+        CreateMap<PatientDto, Patient>().ReverseMap();
+        CreateMap<CreateUpdatePatientDto, Patient>().ReverseMap();
+        CreateMap<PatientDto, CreateUpdatePatientDto>().ReverseMap();
     }
 }

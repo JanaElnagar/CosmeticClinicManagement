@@ -1,6 +1,4 @@
 ﻿using CosmeticClinicManagement.Localization;
-using Volo.Abp.Identity.Web.Navigation;
-using Volo.Abp.SettingManagement.Web.Navigation;
 using Volo.Abp.TenantManagement.Web.Navigation;
 using Volo.Abp.UI.Navigation;
 
@@ -16,7 +14,7 @@ public class CosmeticClinicManagementMenuContributor : IMenuContributor
         }
     }
 
-    private Task ConfigureMainMenuAsync(MenuConfigurationContext context)
+    private async Task ConfigureMainMenuAsync(MenuConfigurationContext context)
     {
         var administration = context.Menu.GetAdministration();
         var l = context.GetLocalizer<CosmeticClinicManagementResource>();
@@ -31,19 +29,41 @@ public class CosmeticClinicManagementMenuContributor : IMenuContributor
                 order: 0
             )
         );
-        context.Menu.AddItem(
+
+        if (await context.IsGrantedAsync("StoreManagement") && await context.IsGrantedAsync("RawMaterialManagement"))
+        {
+            context.Menu.AddItem(
             new ApplicationMenuItem(
-                "InventoryManagement",
+                 "InventoryManagement",
                 l["Menu:InventoryManagement"],
                 icon: "fas fa-shopping-cart"
-                ).AddItem(
+            ).AddItem(
                 new ApplicationMenuItem(
-                "InventoryManagement.Stores",
-                l["Menu:Stores"],
-                url: "/Stores"
+                    "InventoryManagement.Stores",
+                    l["Menu:Stores"],
+                    url: "/Stores"
                 )
             )
         );
+        }
+
+        if (await context.IsGrantedAsync("PatientManagement"))
+        {
+            context.Menu.AddItem(
+                new ApplicationMenuItem(
+                    "PatientsManagement",
+                    l["Menu:PatientsManagement"],
+                    icon: "fa fa-users"
+                ).AddItem(
+                    new ApplicationMenuItem(
+                        "PatientManagement.Patients",
+                        l["Menu:Patients"],
+                        url: "/Patients"
+                    )
+                )
+            );
+        }
+        
 
         if (CosmeticClinicManagementModule.IsMultiTenant)
         {
@@ -53,7 +73,5 @@ public class CosmeticClinicManagementMenuContributor : IMenuContributor
         {
             administration.TryRemoveMenuItem(TenantManagementMenuNames.GroupName);
         }
-
-        return Task.CompletedTask;
     }
 }
