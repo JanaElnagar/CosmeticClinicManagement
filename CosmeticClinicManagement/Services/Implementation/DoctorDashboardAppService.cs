@@ -9,7 +9,7 @@ using Volo.Abp.Application.Services;
 
 namespace CosmeticClinicManagement.Services.Implementation
 {
-    [Authorize(Roles = "Doctor")]
+    [Authorize(Roles="Doctor")]
     public class DoctorDashboardAppService(
         ITreatmentPlanRepository treatmentPlanRepository,
         IPatientRepository patientRepository
