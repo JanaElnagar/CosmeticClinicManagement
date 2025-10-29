@@ -7,6 +7,7 @@ namespace CosmeticClinicManagement.Services.Dtos
     {
         public Guid DoctorId { get; set; }
         public Guid PatientId { get; set; }
+        public string PatientFullName { get; set; }
         public List<Session> Sessions { get; set; }
         public TreatmentPlanStatus Status { get; set; }
         public DateTime CreatedDate { get; set; }

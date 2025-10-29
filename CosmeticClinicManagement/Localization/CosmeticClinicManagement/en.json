@@ -27,6 +27,7 @@
     "SuccessfullyDeleted": "Successfully deleted!",
     "Menu:SessionManagement": "Session Management",
     "Menu:Sessions": "Sessions",
+    "Menu:SessionsForTreatmentPlan": "Sessions for Treatment Plan",
     "UsedMaterials": "Used Materials",
     "SessionStatus": "Session Status",
     "Enum:SessionStatus:0": "Planned",

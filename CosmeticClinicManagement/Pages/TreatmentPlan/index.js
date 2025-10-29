@@ -2,6 +2,8 @@
     var editModal = new abp.ModalManager(abp.appPath + 'TreatmentPlan/EditTreatmentPlanModal');
     var createSessionModal = new abp.ModalManager(abp.appPath + 'Sessions/CreateSessionModal');
 
+    var getSessionModal = new abp.ModalManager(abp.appPath + 'TreatmentPlan/Sessions');
+
     var l = abp.localization.getResource('CosmeticClinicManagement');
     var dataTable = $('#TreatmentPlansTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
@@ -46,9 +48,10 @@
                     title: l('DoctorId'),
                     data: "doctorId"
                 },
+                
                 {
-                    title: l('PatientId'),
-                    data: "patientId",
+                    title: l('Patient'),
+                    data: "patientFullName",
                     orderable: false
                 },
              

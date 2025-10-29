@@ -68,6 +68,8 @@ public class CosmeticClinicManagementMenuContributor : IMenuContributor
          )
         );
 
+  
+
         return Task.CompletedTask;
     }
 }
