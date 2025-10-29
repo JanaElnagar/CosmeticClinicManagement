@@ -1,4 +1,5 @@
 ﻿@using CosmeticClinicManagement.Services.Interfaces
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Badge
 @inject IDoctorDashboardAppService DoctorDashboardAppService
 
 @{
@@ -127,16 +128,16 @@
                                             <td>@session.PatientAge years</td>
                                             <td>
                                                 @{
-                                                    var badgeClass = session.SessionStatus switch
+                                                    var badgeClass = session.SessionStatus.ToString() switch
                                                     {
-                                                        "Completed" => "success",
-                                                        "InProgress" => "primary",
-                                                        "Planned" => "info",
-                                                        "Cancelled" => "danger",
-                                                        _ => "secondary"
+                                                        "Completed" => AbpBadgeType.Success,
+                                                        "InProgress" => AbpBadgeType.Primary,
+                                                        "Planned" => AbpBadgeType.Info,
+                                                        "Cancelled" => AbpBadgeType.Danger,
+                                                        _ => AbpBadgeType.Secondary
                                                     };
                                                 }
-                                                <abp-badge badge-type="@badgeClass">@session.SessionStatus</abp-badge>
+                                                <span abp-badge-pill=@badgeClass>@session.SessionStatus</span>
                                             </td>
                                             <td>
                                                 @if (session.SessionNotes.Any())
