@@ -116,8 +116,4 @@
     <Content Remove="$(UserProfile)\.nuget\packages\*\*\contentFiles\any\*\*.abppkg*" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages\Dashboard\Widgets\" />
-  </ItemGroup>
-
 </Project>

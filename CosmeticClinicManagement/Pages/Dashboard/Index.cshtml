@@ -7,7 +7,7 @@
 
 @if (Model.Role == "Admin")
 {
-    <partial name="AdminDashboard" />
+    <partial name="_AdminDashboardPartial" />
 }
 else if (Model.Role == "Doctor")
 {
@@ -15,7 +15,7 @@ else if (Model.Role == "Doctor")
 } 
 else if (Model.Role == "Receptionist")
 {
-    <partial name="ReceptionistDashboard" />
+    <partial name="_ReceptionistDashboardPartial" />
 }
 else
 {
