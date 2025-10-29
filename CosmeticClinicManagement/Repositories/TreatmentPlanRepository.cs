@@ -2,6 +2,7 @@
 using CosmeticClinicManagement.Domain.ClinicManagement;
 using CosmeticClinicManagement.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using Volo.Abp.Domain.Repositories.EntityFrameworkCore;
 using Volo.Abp.EntityFrameworkCore;
 
@@ -18,6 +19,12 @@ namespace CosmeticClinicManagement.Repositories
                 .Include(tp => tp.Sessions)
                 .Where(tp => tp.DoctorId == doctorId)
                 .ToListAsync();
+        }
+
+        public override async Task<IQueryable<TreatmentPlan>> WithDetailsAsync()
+        {
+            var query = await GetQueryableAsync();
+            return query.Include(tp => tp.Sessions);
         }
     }
 }
