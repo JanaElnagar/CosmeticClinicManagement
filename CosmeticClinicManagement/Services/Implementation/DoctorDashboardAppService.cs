@@ -33,7 +33,7 @@ namespace CosmeticClinicManagement.Services.Implementation
                 TodaySessionsCount = todaySessions.Count,
                 PlannedSessionsCount = allSessions.Count(s => s.Status == SessionStatus.Planned),
                 PatientsCount = patientIds.Count,
-                TodaySessionsSummary = await GetSessionSummaries(allSessions, patientIds, doctorTreatmentPlans)
+                TodaySessionsSummary = await GetSessionSummaries(todaySessions, patientIds, doctorTreatmentPlans)
             };
         }
 

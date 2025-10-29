@@ -20,94 +20,112 @@ namespace CosmeticClinicManagement.Data
         public async Task SeedAsync(DataSeedContext context)
         {
             var doctorUser = await SeedDoctorIfNotExist();
-            // Seeding patients
+            var patients = await SeedPatientsIfNotExist();
+            var treatmentPlans = await SeedTreatmentPlansIfNotExist(doctorUser, patients);
+            await SeedSessionsIfNotExist(treatmentPlans);
+        }
+
+        private async Task SeedSessionsIfNotExist(List<TreatmentPlan> treatmentPlans)
+        {
+            foreach (var plan in treatmentPlans)
+            {
+                if (plan.Sessions.Any(s => s.SessionDate.Day == DateTime.Now.Day))
+                {
+                    foreach (var session in plan.Sessions)
+                    {
+                        if (session.SessionDate < DateTime.Now && session.Status != SessionStatus.Completed)
+                        {
+                            session.UpdateStatus(SessionStatus.Completed);
+                        }
+                    }
+
+                    continue;
+                }
+
+                if (plan.Sessions.Count > 0)
+                {
+                    foreach (var session in plan.Sessions)
+                    {
+                        session.UpdateStatus(SessionStatus.Completed);
+                    }
+                }
+                
+                var session1 = new Session(
+                    _guidGenerator.Create(),
+                    plan.Id,
+                    DateTime.Now.AddHours(5),
+                    ["Initial consultation and assessment."],
+                    SessionStatus.Planned
+                );
+                var session2 = new Session(
+                    _guidGenerator.Create(),
+                    plan.Id,
+                    DateTime.Now.AddHours(6),
+                    ["First treatment session.", "Applied laser therapy."],
+                    SessionStatus.Planned
+                );
+                plan.AddSession(session1);
+                plan.AddSession(session2);
+            }
+
+            await _treatmentPlanRepository.UpdateManyAsync(treatmentPlans);
+        }
+
+        private async Task<List<TreatmentPlan>> SeedTreatmentPlansIfNotExist(IdentityUser doctorUser, List<Patient> patients)
+        {
+            var dbTreatmentPlans = await _treatmentPlanRepository.GetTreatmentPlansByDoctorIdAsync(doctorUser.Id);
+            
+            List<TreatmentPlan> treatmentPlans = [];
+
+            foreach (var patient in patients)
+            {
+                if (dbTreatmentPlans.Any(tp => tp.PatientId == patient.Id))
+                {
+                    continue;
+                }
+
+                var treatmentPlan = new TreatmentPlan(
+                    _guidGenerator.Create(),
+                    doctorUser.Id,
+                    patient.Id
+                );
+                
+                treatmentPlans.Add(treatmentPlan);
+            }
+
+            await _treatmentPlanRepository.InsertManyAsync(treatmentPlans);
+
+            return await _treatmentPlanRepository.GetTreatmentPlansByDoctorIdAsync(doctorUser.Id);
+        }
+
+        private async Task<List<Patient>> SeedPatientsIfNotExist()
+        {
             if (await _patientRepository.GetCountAsync() > 0)
             {
-                return; // Already seeded
+                return await _patientRepository.GetListAsync();
             }
-            var patient1 = await _patientRepository.InsertAsync(new Patient(
+
+            var patient1 = new Patient(
                 _guidGenerator.Create(),
                 "John",
                 "Doe",
-                new DateTime(1990, 1, 1),
+                new DateTime(2000, 9, 15),
                 "j@d.com",
                 "1234567890"
-            ));
+            );
 
-            var patient2 = await _patientRepository.InsertAsync(new Patient(
+            var patient2 = new Patient(
                 _guidGenerator.Create(),
                 "Hossam",
                 "Hassan",
-                new DateTime(1990, 1, 1),
+                new DateTime(1999, 7, 10),
                 "h@h.com",
                 "1234568890"
-            ));
+            );
 
             await _patientRepository.InsertManyAsync([patient1, patient2]);
 
-            // Seeding treatment plans
-            var treatmentPlan1 = new TreatmentPlan(
-                _guidGenerator.Create(),
-                doctorUser.Id,
-                patient1.Id
-            );
-
-            var treatmentPlan2 = new TreatmentPlan(
-                _guidGenerator.Create(),
-                doctorUser.Id,
-                patient2.Id
-            );
-
-            // Adding sessions to treatment plans
-            treatmentPlan1.AddSession(new Session(
-                _guidGenerator.Create(),
-                treatmentPlan1.Id,
-                DateTime.Now.AddHours(2),
-                ["Initial consultation"],
-                SessionStatus.Planned
-            ));
-
-            treatmentPlan1.AddSession(new Session(
-                _guidGenerator.Create(),
-                treatmentPlan1.Id,
-                DateTime.Now.AddDays(3),
-                ["consultation"],
-                SessionStatus.Planned
-            ));
-
-            treatmentPlan1.AddSession(new Session(
-                _guidGenerator.Create(),
-                treatmentPlan1.Id,
-                DateTime.Now.AddDays(5),
-                ["consultation"],
-                SessionStatus.Planned
-            ));
-
-            treatmentPlan2.AddSession(new Session(
-                _guidGenerator.Create(),
-                treatmentPlan1.Id,
-                DateTime.Now.AddHours(5),
-                ["Initial consultation"],
-                SessionStatus.Planned
-            ));
-
-            treatmentPlan2.AddSession(new Session(
-                _guidGenerator.Create(),
-                treatmentPlan1.Id,
-                DateTime.Now.AddDays(3),
-                ["consultation"],
-                SessionStatus.Planned
-            ));
-
-            treatmentPlan2.AddSession(new Session(
-                _guidGenerator.Create(),
-                treatmentPlan1.Id,
-                DateTime.Now.AddDays(5),
-                ["consultation"],
-                SessionStatus.Planned
-            ));
-
-            await _treatmentPlanRepository.InsertManyAsync([treatmentPlan1, treatmentPlan2]);
+            return [patient1, patient2];
         }
 
         private async Task<IdentityUser> SeedDoctorIfNotExist()
