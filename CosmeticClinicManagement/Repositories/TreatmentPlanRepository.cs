@@ -21,10 +21,13 @@ namespace CosmeticClinicManagement.Repositories
                 .ToListAsync();
         }
 
-        public override async Task<IQueryable<TreatmentPlan>> WithDetailsAsync()
+        
+        public async Task<List<TreatmentPlan>> GetListWithDetailsAsync()
         {
             var query = await GetQueryableAsync();
-            return query.Include(tp => tp.Sessions);
+            return await query
+                .Include(tp => tp.Sessions)
+                .ToListAsync();
         }
     }
 }

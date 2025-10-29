@@ -3,16 +3,17 @@ using CosmeticClinicManagement.Domain.PatientAggregateRoot;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using CosmeticClinicManagement.Services.Dtos.Dashboard;
+using CosmeticClinicManagement.Domain.Interfaces;
 
 namespace CosmeticClinicManagement.Services.Implementation
 {
     public class ReceptionistDashboardAppService : ApplicationService
     {
-        private readonly IRepository<TreatmentPlan, Guid> _treatmentPlanRepository;
+        private readonly ITreatmentPlanRepository _treatmentPlanRepository;
         private readonly IRepository<Patient, Guid> _patientRepository;
 
         public ReceptionistDashboardAppService(
-            IRepository<TreatmentPlan, Guid> treatmentPlanRepository,
+            ITreatmentPlanRepository treatmentPlanRepository,
             IRepository<Patient, Guid> patientRepository)
         {
             _treatmentPlanRepository = treatmentPlanRepository;
@@ -21,18 +22,14 @@ namespace CosmeticClinicManagement.Services.Implementation
 
         public async Task<ReceptionistDashboardDto> GetDashboardDataAsync()
         {
-            var treatmentPlans = await _treatmentPlanRepository.GetListAsync(includeDetails:true);
+            var treatmentPlans = await _treatmentPlanRepository.GetListWithDetailsAsync();
             var patients = await _patientRepository.GetListAsync();
 
 
-            //var allSessions = treatmentPlans
-            //    .SelectMany(tp => tp.Sessions)
-            //    .ToList();
-
             var allSessions = treatmentPlans
-                        .Where(tp => tp.Sessions != null)
-                        .SelectMany(tp => tp.Sessions)
-                        .ToList();
+                .SelectMany(tp => tp.Sessions)
+                .ToList();
+            
 
             var upcomingSessions = allSessions
                 .Where(s => s.SessionDate > DateTime.Now && s.Status == SessionStatus.Planned)
