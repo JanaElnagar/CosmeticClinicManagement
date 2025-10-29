@@ -21,12 +21,18 @@ namespace CosmeticClinicManagement.Services.Implementation
 
         public async Task<ReceptionistDashboardDto> GetDashboardDataAsync()
         {
-            var treatmentPlans = await _treatmentPlanRepository.GetListAsync();
+            var treatmentPlans = await _treatmentPlanRepository.GetListAsync(includeDetails:true);
             var patients = await _patientRepository.GetListAsync();
 
+
+            //var allSessions = treatmentPlans
+            //    .SelectMany(tp => tp.Sessions)
+            //    .ToList();
+
             var allSessions = treatmentPlans
-                .SelectMany(tp => tp.Sessions)
-                .ToList();
+                        .Where(tp => tp.Sessions != null)
+                        .SelectMany(tp => tp.Sessions)
+                        .ToList();
 
             var upcomingSessions = allSessions
                 .Where(s => s.SessionDate > DateTime.Now && s.Status == SessionStatus.Planned)
