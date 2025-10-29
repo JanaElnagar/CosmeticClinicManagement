@@ -8,7 +8,7 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
     {
         public Guid DoctorId { get; private set; }
         public Guid PatientId { get; private set; }
-        public List<Session> Sessions { get; private set; }
+        public List<Session> Sessions { get; private set; } = new();
         public TreatmentPlanStatus Status { get; private set; }
 
         protected TreatmentPlan() { }
@@ -18,7 +18,8 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
             DoctorId = doctorId;
             PatientId = patientId;
             Status = TreatmentPlanStatus.Ongoing;
-            Sessions = [];
+            Sessions = new List<Session>();
+            
         }
 
 

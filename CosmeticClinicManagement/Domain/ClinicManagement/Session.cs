@@ -5,7 +5,7 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
     public class Session : FullAuditedEntity<Guid>
     {
         public DateTime SessionDate { get; private set; }
-        public List<UsedMaterial> UsedMaterials { get; private set; }
+        public List<UsedMaterial> UsedMaterials { get; private set; }=new();
         public List<string> Notes { get; private set; }
         public SessionStatus Status { get; private set; }
         public Guid PlanId { get; private set; }

@@ -7,8 +7,10 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using System.Linq;
-using CosmeticClinicManagement.Services.Dtos.Sessions;
+using CosmeticClinicManagement.Services.Dtos;
 using Volo.Abp.ObjectMapping;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace CosmeticClinicManagement.Services.Implementation
@@ -62,16 +64,36 @@ namespace CosmeticClinicManagement.Services.Implementation
            (input)
             );
         }
-        public async Task<ListResultDto<SessionsLookupDto>>
-         GetSessionsAsync()
+
+        public async Task<PagedResultDto<SessionDto>>
+ GetSessionsAsync(Guid PlanId,PagedAndSortedResultRequestDto
+input)
         {
-            var sessions = await _sessionRepository.GetListAsync();
-            return new ListResultDto<SessionsLookupDto>(
-            ObjectMapper
-            .Map<List<Session>, List<SessionsLookupDto>>
+            var queryable = await _sessionRepository
+     .WithDetailsAsync(x => x.UsedMaterials);
+            queryable = queryable.Where(s=>s.PlanId==PlanId)
+                .OrderBy(tp => tp.Id)
+            .Skip(input.SkipCount)
+            .Take(input.MaxResultCount);
+            var sessions = await
+           AsyncExecuter.ToListAsync(queryable);
+            var count = await _sessionRepository.CountAsync(s => s.PlanId==PlanId);
+            return new PagedResultDto<SessionDto>(
+            count,
+            ObjectMapper.Map<List<Session>, List<SessionDto>>
            (sessions)
             );
         }
+        //public async Task<ListResultDto<SessionDto>>
+        // GetSessionsAsync()
+        //{
+        //    var sessions = await _sessionRepository.GetListAsync();
+        //    return new ListResultDto<Dtos.SessionDto>(
+        //    ObjectMapper
+        //    .Map<List<Session>, List<Dtos.SessionDto>>
+        //   (sessions)
+        //    );
+        //}
 
         public async Task<TreatmentPlanDto> GetAsync(Guid id)
         {
@@ -86,8 +108,18 @@ namespace CosmeticClinicManagement.Services.Implementation
             ObjectMapper.Map<CreateUpdateTreatmentPlanDto, TreatmentPlan>
            (input, treatmentPlan);
         }
-
-
+        //[Authorize]
+        public async Task CreateSessionAsync(Guid PlanId , [FromBody]CreateUpdateSessionDto input)
+        {
+            var treatmentPlan = await _treatmentPlanRepository.GetAsync(input.PlanId);
+            treatmentPlan.AddSession(new Session(
+                GuidGenerator.Create(),
+                input.PlanId,
+                input.SessionDate,
+                new List<string> { "Use gentle cleanser", "Patient has sensitive skin" },
+                input.Status));
+            await _treatmentPlanRepository.UpdateAsync(treatmentPlan);
+        }
         public async Task DeleteAsync(Guid id)
         {
             await _treatmentPlanRepository.DeleteAsync(id);

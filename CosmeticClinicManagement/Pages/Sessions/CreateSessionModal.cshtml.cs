@@ -10,43 +10,42 @@ using System.Linq;
 
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
-namespace CosmeticClinicManagement.Pages.TreatmentPlan
+namespace CosmeticClinicManagement.Pages.Sessions
+
 {
-    public class CreateTreatmentPlanModalModel : AbpPageModel
+    public class CreateSessionModalModel : AbpPageModel
     {
 
         [BindProperty]
-        public CreateEditTreatmentPlanViewModel TreatmentPlan { get;  set; }
+        public CreateEditSessionViewModel Session { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public Guid PlanId { get; set; }
 
-        [BindProperty]
-        public List<CreateUpdateSessionDto> Session { get; set; }
         // public SelectListItem[] Categories { get; set; }
         private readonly ITreatmentPlanAppService
        _treatmentPlanAppService;
-        public CreateTreatmentPlanModalModel(
+        public CreateSessionModalModel(
         ITreatmentPlanAppService treatmentPlanAppService)
         {
             _treatmentPlanAppService = treatmentPlanAppService;
         }
-        public async Task OnGetAsync() {
-            TreatmentPlan = new CreateEditTreatmentPlanViewModel
+        public async Task OnGetAsync()
+        {
+            Session = new CreateEditSessionViewModel
             {
-                CreatedDate = Clock.Now,
-                Status = TreatmentPlanStatus.Ongoing,
+                PlanId=PlanId,
+                Status= SessionStatus.InProgress,
 
-                
+
             };
-         //   TreatmentPlan.Sessions = Session;
+            //   TreatmentPlan.Sessions = Session;
             // TODO
         }
- public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync()
         {
             // TODO
-            await _treatmentPlanAppService.CreateAsync(
- ObjectMapper
-
-.Map<CreateEditTreatmentPlanViewModel, CreateUpdateTreatmentPlanDto>
-(TreatmentPlan)
+            await _treatmentPlanAppService.CreateSessionAsync(
+                PlanId,ObjectMapper.Map<CreateEditSessionViewModel, CreateUpdateSessionDto>(Session)
  );
             return NoContent();
         }

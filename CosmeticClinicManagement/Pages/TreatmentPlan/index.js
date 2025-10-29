@@ -1,5 +1,7 @@
 ﻿$(function () {
     var editModal = new abp.ModalManager(abp.appPath + 'TreatmentPlan/EditTreatmentPlanModal');
+    var createSessionModal = new abp.ModalManager(abp.appPath + 'Sessions/CreateSessionModal');
+
     var l = abp.localization.getResource('CosmeticClinicManagement');
     var dataTable = $('#TreatmentPlansTable').DataTable(
         abp.libs.datatables.normalizeConfiguration({
@@ -35,6 +37,7 @@
                                             });
                                     }
                                 }
+                                
                             ]
                     }
                 },
@@ -69,7 +72,22 @@
                     //            }
                     //        ]
                     //}
-                }
+                }, {
+                    title: l('Sessions'),
+                    rowAction: {
+                        items:
+                            [
+                                
+                                {
+                                    text: l('New Session'),
+                                    action: function (data) {
+                                        createSessionModal.open({ planId: data.record.id });
+                                    }
+                                }
+                            ]
+                    }
+                },
+
 
                
 
@@ -79,6 +97,9 @@
 editModal.onResult(function () {
     dataTable.ajax.reload();
 });
+    createSessionModal.onResult(function () {
+        dataTable.ajax.reload();
+    });
     var createModal = new abp.ModalManager(abp.appPath +
         'TreatmentPlan/CreateTreatmentPlanModal');
     createModal.onResult(function () {

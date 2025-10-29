@@ -53,6 +53,21 @@ public class CosmeticClinicManagementMenuContributor : IMenuContributor
          )
          )
         );
+
+        context.Menu.AddItem(
+         new ApplicationMenuItem(
+         "SessionManagement",
+         l["Menu:SessionManagement"],
+         icon: "fas fa-shopping-cart"
+         ).AddItem(
+         new ApplicationMenuItem(
+         "CosmeticClinicManagement.Sessions",
+         l["Menu:Sessions"],
+         url: "/Sessions"
+         )
+         )
+        );
+
         return Task.CompletedTask;
     }
 }

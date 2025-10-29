@@ -8,7 +8,7 @@ namespace CosmeticClinicManagement.Services.Dtos
         public DateTime SessionDate { get; set; }
         public List<UsedMaterial> UsedMaterials { get; set; }
         public List<string> Notes { get; set; }
-        public SessionStatus Status { get; set; }
+        public SessionStatus sessionStatus { get; set; }
         public Guid PlanId { get; set; }
 
     }

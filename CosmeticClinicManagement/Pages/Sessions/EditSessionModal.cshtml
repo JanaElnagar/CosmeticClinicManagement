@@ -2,19 +2,25 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using CosmeticClinicManagement.Localization
 @using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
-@model CosmeticClinicManagement.Pages.TreatmentPlan.EditTreatmentPlanModalModel
+@model CosmeticClinicManagement.Pages.Sessions.EditSessionModalModel
 @inject IHtmlLocalizer<CosmeticClinicManagementResource> L
 @{
  Layout = null;
 }
-<abp-dynamic-form abp-model="TreatmentPlan"
- asp-page="/TreatmentPlan/EditTreatmentPlanModal">
+<abp-dynamic-form abp-model="Session"
+ asp-page="/Sessions/EditSessionModal">
  <abp-modal>
  @* <abp-modal-header title="@Model.TreatmentPlan.Id"></abp-modal-header> *@
  <abp-modal-body>
  <abp-input asp-for="Id" />
- <abp-form-content/>
- </abp-modal-body>
+  <abp-form-content exclude-properties="Notes" />
+
+    <div class="form-group">
+        <label>@L["Notes"]</label>
+        <textarea asp-for="NotesText" class="form-control" rows="5">
+</textarea>
+</div>
+</abp-modal-body>
  <abp-modal-footer buttons="@(AbpModalButtons.
 Cancel|AbpModalButtons.Save)"></abp-modal-footer>
  </abp-modal>

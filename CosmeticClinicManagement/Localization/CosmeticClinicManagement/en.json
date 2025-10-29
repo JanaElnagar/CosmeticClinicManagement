@@ -18,14 +18,24 @@
     //"Enum:Status:1": "Cancelled",
     //"Enum:Status:2": "In Progress",
     //"Enum:Status:3": "Completed",
-
+    "Session": "Session",
     "Sessions": "Sessions",
     "SessionDate": "Session date",
-    "UsedMaterials": "used materials",
     "Notes": "Notes",
     "NewTreatmentPlan": "New Treatment Plan",
     "ProductDeletionConfirmationMessage": "Are you sure to delete this book: {0}",
-    "SuccessfullyDeleted": "Successfully deleted!"
+    "SuccessfullyDeleted": "Successfully deleted!",
+    "Menu:SessionManagement": "Session Management",
+    "Menu:Sessions": "Sessions",
+    "UsedMaterials": "Used Materials",
+    "SessionStatus": "Session Status",
+    "Enum:SessionStatus:0": "Planned",
+    "Enum:sessionStatus:1": "Cancelled",
+    "Enum:sessionStatus:2": "In Progress",
+    "Enum:sessionStatus:3": "Completed",
+    "NewSession": "New Session",
+    "CreateSession": "Create Session",
+    "SessionActions": "Session Actions"
   }
 }
 
