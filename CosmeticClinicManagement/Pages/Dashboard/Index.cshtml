@@ -9,10 +9,10 @@
 {
     <partial name="AdminDashboard" />
 }
-@* else if (Model.Role == "Doctor")
+else if (Model.Role == "Doctor")
 {
-    <partial name="DoctorDashboard" />
-} *@
+    <partial name="_DoctorDashboardPartial" />
+} 
 else if (Model.Role == "Receptionist")
 {
     <partial name="ReceptionistDashboard" />

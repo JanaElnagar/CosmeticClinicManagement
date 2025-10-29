@@ -8,25 +8,28 @@ namespace CosmeticClinicManagement.Pages.Dashboard
     {
         private readonly ICurrentUser _currentUser;
         private readonly AdminDashboardAppService _adminService;
-        //private readonly DoctorDashboardAppService _doctorService;
+        private readonly DoctorDashboardAppService _doctorService;
         private readonly ReceptionistDashboardAppService _receptionistService;
 
         public string Role { get; set; } = "";
+        public string UserName { get; set; } = "";
 
         public IndexModel(
             ICurrentUser currentUser,
             AdminDashboardAppService adminService,
-            //DoctorDashboardAppService doctorService,
+            DoctorDashboardAppService doctorService,
             ReceptionistDashboardAppService receptionistService)
         {
             _currentUser = currentUser;
             _adminService = adminService;
-            //_doctorService = doctorService;
+            _doctorService = doctorService;
             _receptionistService = receptionistService;
         }
 
         public async Task OnGetAsync()
         {
+            UserName = $"{_currentUser.Name} {_currentUser.SurName}";
+
             if (_currentUser.Roles.Contains("admin"))
                 Role = "Admin";
             else if (_currentUser.Roles.Contains("Doctor"))

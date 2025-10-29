@@ -8,12 +8,8 @@ using System.Linq.Dynamic.Core;
 
 namespace CosmeticClinicManagement.Repositories
 {
-    public class PatientRepository : EfCoreRepository<CosmeticClinicManagementDbContext, Patient, Guid>, IPatientRepository
+    public class PatientRepository(IDbContextProvider<CosmeticClinicManagementDbContext> dbContextProvider) : EfCoreRepository<CosmeticClinicManagementDbContext, Patient, Guid>(dbContextProvider), IPatientRepository
     {
-        public PatientRepository(IDbContextProvider<CosmeticClinicManagementDbContext> dbContextProvider) : base(dbContextProvider)
-        {
-        }
-
         public async Task<List<Patient>> GetPagedListAsync(int skipCount, int maxResultCount, string sorting)
         {
             var query = await GetQueryableAsync();
@@ -22,6 +18,18 @@ namespace CosmeticClinicManagement.Repositories
                 .Skip(skipCount)
                 .Take(maxResultCount)
                 .ToListAsync();
+        }
+
+        public async Task<Dictionary<Guid, (string FullName, DateTime DateOfBirth)>> GetPatientNamesAndDateOfBirthAsync(List<Guid> ids)
+        {
+            var query = await GetQueryableAsync();
+
+            return await query
+                .Where(p => ids.Contains(p.Id))
+                .ToDictionaryAsync(
+                    p => p.Id,
+                    p => ($"{p.FirstName} {p.LastName}", p.DateOfBirth)
+                );
         }
     }
 }

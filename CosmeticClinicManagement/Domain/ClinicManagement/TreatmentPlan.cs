@@ -16,6 +16,7 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
             DoctorId = doctorId;
             PatientId = patientId;
             Status = TreatmentPlanStatus.Ongoing;
+            //Sessions = new List<Session>();
             Sessions = [];
         }
 
