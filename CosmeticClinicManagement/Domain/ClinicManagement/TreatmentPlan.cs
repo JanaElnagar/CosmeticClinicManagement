@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ValueGeneration;
-using Volo.Abp.Domain.Entities.Auditing;
-using Volo.Abp.Guids;
+﻿using Volo.Abp.Domain.Entities.Auditing;
 
 namespace CosmeticClinicManagement.Domain.ClinicManagement
 {
@@ -18,9 +16,10 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
             DoctorId = doctorId;
             PatientId = patientId;
             Status = TreatmentPlanStatus.Ongoing;
+
             Sessions = new List<Session>();
             
-        }
+ }
 
 
         internal void AddSession(Session session)

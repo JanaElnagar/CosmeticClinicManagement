@@ -2,28 +2,26 @@
 using CosmeticClinicManagement.Domain.PatientAggregateRoot;
 using CosmeticClinicManagement.Services.Dtos;
 using CosmeticClinicManagement.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
-using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Guids;
 
 namespace CosmeticClinicManagement.Services.Implementation
 {
+    [Authorize("PatientManagement")]
     public class PatientAppService : ApplicationService, IPatientAppService
     {
         private readonly IPatientRepository _patientRepository;
-        private readonly IGuidGenerator _guidGenerator;
 
         public PatientAppService(IPatientRepository patientRepository, IGuidGenerator guidGenerator)
         {
             _patientRepository = patientRepository;
-            _guidGenerator = guidGenerator;
         }
 
-        public async Task<PatientDto> CreateAsync(PatientDto input)
+        public async Task<PatientDto> CreateAsync(CreateUpdatePatientDto input)
         {
-            input.Id = _guidGenerator.Create();
-            var patient = ObjectMapper.Map<PatientDto, Patient>(input);
+            var patient = ObjectMapper.Map<CreateUpdatePatientDto, Patient>(input);
             patient = await _patientRepository.InsertAsync(patient, autoSave: true);
             return ObjectMapper.Map<Patient, PatientDto>(patient);
         }
@@ -31,6 +29,14 @@ namespace CosmeticClinicManagement.Services.Implementation
         public async Task DeleteAsync(Guid id)
         {
             await _patientRepository.DeleteAsync(id);
+        }
+
+        public Task<List<PatientDto>> GetAllPatientsAsync()
+        {
+            var patients =  _patientRepository.GetListAsync();
+            return patients.ContinueWith(task => 
+                ObjectMapper.Map<List<Patient>, List<PatientDto>>(task.Result)
+            );
         }
 
         public async Task<PatientDto> GetAsync(Guid id)
@@ -49,14 +55,10 @@ namespace CosmeticClinicManagement.Services.Implementation
             );
         }
 
-        public async Task UpdateAsync(Guid id, PatientDto input)
+        public async Task UpdateAsync(Guid id, CreateUpdatePatientDto input)
         {
-            if (id != input.Id)
-            {
-                throw new ArgumentException("The ID in the URL does not match the ID in the body.");
-            }
-
-            var patient = ObjectMapper.Map<PatientDto, Patient>(input);
+            var patient = await _patientRepository.FindAsync(id);
+            ObjectMapper.Map(input, patient);
             await _patientRepository.UpdateAsync(patient, autoSave: true);
         }
     }

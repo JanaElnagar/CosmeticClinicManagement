@@ -1,8 +1,15 @@
-﻿using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace CosmeticClinicManagement.Pages;
-
-public class IndexModel : AbpPageModel
+namespace CosmeticClinicManagement.Pages
 {
-    
+    [Authorize]
+    public class IndexModel : PageModel
+    {
+        public IActionResult OnGet()
+        {
+            return RedirectToPage("/Dashboard/Index");
+        }
+    }
 }

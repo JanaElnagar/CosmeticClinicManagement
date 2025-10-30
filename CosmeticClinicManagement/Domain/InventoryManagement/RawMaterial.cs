@@ -1,4 +1,6 @@
-﻿using Volo.Abp.Domain.Entities;
+﻿using CosmeticClinicManagement.Enum;
+using Volo.Abp;
+using Volo.Abp.Domain.Entities;
 
 namespace CosmeticClinicManagement.Domain.InventoryManagement
 {
@@ -35,7 +37,10 @@ namespace CosmeticClinicManagement.Domain.InventoryManagement
 
             if (string.IsNullOrEmpty(description))
             {
-                throw new ArgumentException("Description cannot be empty.", nameof(description));
+               
+                throw new BusinessException("CosmeticClinicManagement:RawMaterial:DescriptionEmpty")
+     .WithData("Field", "Description");
+
             }
 
             if (quantity <= 0)
@@ -87,6 +92,16 @@ namespace CosmeticClinicManagement.Domain.InventoryManagement
             }
 
             Price = newPrice;
+        }
+        public void UpdateDetails(string name, string description, int quantity, decimal price, DateTime expiryDate)
+        {
+            ValidateParameters(name, description, quantity, price, expiryDate);
+
+            Name = name;
+            Description = description;
+            Quantity = quantity;
+            Price = price;
+            ExpiryDate = expiryDate;
         }
     }
 }
