@@ -80,7 +80,7 @@ namespace CosmeticClinicManagement.Data
             var treatmentPlan1 = new TreatmentPlan
             (
                 tp1Id,
-                Guid.NewGuid(),
+                Guid.Parse("4eb97ff7-cbd4-daac-7d03-3a1d568bc779"),
                 patient1.Id);
             var session1 = new Session(
              Guid.NewGuid(),
@@ -108,7 +108,7 @@ namespace CosmeticClinicManagement.Data
 
             // Second TreatmentPlan
             var tp2Id = Guid.NewGuid();
-            var treatmentPlan2 = new TreatmentPlan(tp2Id, Guid.NewGuid(), patient2.Id);
+            var treatmentPlan2 = new TreatmentPlan(tp2Id, Guid.Parse("acfdfd36-1216-391c-0d7d-3a1d568d0ec5"), patient2.Id);
 
             var s2_1 = new Session(
                 Guid.NewGuid(),

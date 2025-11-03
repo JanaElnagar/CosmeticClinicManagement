@@ -34,7 +34,7 @@
                                     },
                                     action: function (data) {
                                         cosmeticClinicManagement.services.implementation.treatmentPlan.delete(data.record.id).then(function () {
-                                                abp.notify.info(l('SuccessfullyDeleted'));
+                                                abp.notify.info(l('SuccessfullyDeletedTreatmentPlan'));
                                                 dataTable.ajax.reload();
                                             });
                                     }
@@ -45,8 +45,8 @@
                 },
                 
                 {
-                    title: l('DoctorId'),
-                    data: "doctorId"
+                    title: l('Doctor'),
+                    data: "doctorName"
                 },
                 
                 {

@@ -15,13 +15,13 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
             Quantity = quantity;
         }
 
-        public void AddQuantity(decimal additionalQuantity)
+        public UsedMaterial AddQuantity(decimal additionalQuantity)
         {
             if (additionalQuantity <= 0)
             {
                 throw new ArgumentException("Additional quantity must be greater than zero.");
             }
-            Quantity += additionalQuantity;
+            return new UsedMaterial(RawMaterialId, Quantity + additionalQuantity);
         }
 
         protected override IEnumerable<object> GetAtomicValues()

@@ -2,7 +2,6 @@
 using CosmeticClinicManagement.Domain.Interfaces;
 using CosmeticClinicManagement.Domain.PatientAggregateRoot;
 using CosmeticClinicManagement.Services.Dtos;
-using CosmeticClinicManagement.Services.Dtos;
 using CosmeticClinicManagement.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +16,7 @@ using Volo.Abp.ObjectMapping;
 
 namespace CosmeticClinicManagement.Services.Implementation
 {
+    [Authorize("TreatmentPlanManagement")]
     public class TreatmentPlanAppService : ApplicationService, ITreatmentPlanAppService
     {
         private readonly IRepository<TreatmentPlan, Guid> _treatmentPlanRepository;
@@ -47,23 +47,33 @@ namespace CosmeticClinicManagement.Services.Implementation
         public async Task<PagedResultDto<TreatmentPlanDto>> GetListAsync(
                                 PagedAndSortedResultRequestDto input)
         {
-            var queryable = await _treatmentPlanRepository.WithDetailsAsync(x => x.Sessions);
+            var queryable = await _treatmentPlanRepository.WithDetailsAsync(x => x.Sessions, x =>x.Doctor);
             var paged = queryable.OrderBy(tp => tp.Id)
             .Skip(input.SkipCount)
-            .Take(input.MaxResultCount);
-            var treatmentPlans
+            .Take(input.MaxResultCount).Select(tp => new TreatmentPlanDto
+            {
+                Id = tp.Id,
+                DoctorId = tp.DoctorId,
+                DoctorName = tp.Doctor.Name,
+                PatientId = tp.PatientId,
+                Status = tp.Status,
+                CreatedDate = tp.CreationTime,
+                Sessions = tp.Sessions.ToList()
+            });
+            var planDtos
                 = await
            AsyncExecuter.ToListAsync(paged);
             var count = await _treatmentPlanRepository.GetCountAsync();
-            var planDtos = ObjectMapper.Map<List<TreatmentPlan>, List<TreatmentPlanDto>>(treatmentPlans);
-
+           
             // Efficient lookup for patient names
             var patientIds = planDtos.Select(x => x.PatientId).Distinct().ToList();
             var patients = await _patientRepository.GetListAsync(p => patientIds.Contains(p.Id));
             var patientDict = patients.ToDictionary(p => p.Id, p => p.FullName);
 
             foreach (var plan in planDtos)
+            {
                 plan.PatientFullName = patientDict.GetValueOrDefault(plan.PatientId, "Unknown");
+            }
 
             return new PagedResultDto<TreatmentPlanDto>(count, planDtos);
         }

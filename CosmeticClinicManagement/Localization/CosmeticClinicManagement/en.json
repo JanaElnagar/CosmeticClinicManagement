@@ -9,6 +9,7 @@
     "Menu:TreatmentPlans": "TreatmentPlans",
     "DoctorId": "Doctor Id",
     "PatientId": "Patient Id",
+    "Doctor": "Doctor",
 
     "Status": "Status",
     "Enum:Status:0": "Ongoing",
@@ -48,6 +49,8 @@
     "NewPatient": "Register new patient",
     "PatientDeletionConfirmationMessage": "Are you sure you want to delete this patient?",
     "SuccessfullyDeletedPatient": "Patient deleted successfully.",
+    "TreatmentPlanDeletionConfirmationMessage": "Are you sure you want to delete this treatment plan?",
+    "SuccessfullyDeletedTreatmentPlan": "Treatment plan deleted successfully.",
 
     "PatientManagement": "Patient Management",
     "Permission:PatientManagement": "Manage Patients",
@@ -71,7 +74,14 @@
     "DisplayName": "Cosmetic Clinic Management",
     "Menu:InventoryManagement": "Inventory Management",
     "Menu:Stores": "Stores",
-    "CosmeticClinicManagement:RawMaterial:DescriptionEmpty": "Description cannot be empty."
+    "CosmeticClinicManagement:RawMaterial:DescriptionEmpty": "Description cannot be empty.",
+
+    "TreatmentPlanManagement": "Treatment Plan Management",
+    "Permission:TreatmentPlanManagement": "Manage Treatment Plans",
+    "Permission:CreateTreatmentPlan": "Create Treatment Plan",
+    "Permission:EditTreatmentPlan": "Edit Treatment Plan",
+    "Permission:DeleteTreatmentPlan": "Delete Treatment Plan",
+    "Permission:ViewTreatmentPlan": "View Treatment Plan"
 
   }
 }

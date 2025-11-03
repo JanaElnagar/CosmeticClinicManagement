@@ -1,10 +1,16 @@
-﻿using Volo.Abp.Domain.Entities.Auditing;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
+using Volo.Abp.Domain.Entities.Auditing;
+using Volo.Abp.Identity;
 
 namespace CosmeticClinicManagement.Domain.ClinicManagement
 {
     public class TreatmentPlan : FullAuditedAggregateRoot<Guid>
     {
         public Guid DoctorId { get; private set; }
+        //useless
+        [ForeignKey("DoctorId")]
+        public virtual Volo.Abp.Identity.IdentityUser Doctor { get; private set; }
         public Guid PatientId { get; private set; }
         public List<Session> Sessions { get; private set; } = new();
         public TreatmentPlanStatus Status { get; private set; }

@@ -12,7 +12,9 @@ public class CosmeticClinicManagementAutoMapperProfile : Profile
 {
     public CosmeticClinicManagementAutoMapperProfile()
     {
-        CreateMap<TreatmentPlan,TreatmentPlanDto > ();
+        CreateMap<TreatmentPlan, TreatmentPlanDto>();
+        //.ForMember(dest => dest.DoctorName,
+        //      opt => opt.MapFrom(src => src.Doctor != null ? src.Doctor.Name : null)); 
  
         CreateMap<SessionDto, Session>().ReverseMap();
        

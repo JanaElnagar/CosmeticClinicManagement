@@ -1,11 +1,14 @@
-﻿using Volo.Abp.Domain.Entities.Auditing;
+﻿using System.ComponentModel.DataAnnotations;
+using Volo.Abp.AspNetCore.Mvc.UI.Theming;
+using Volo.Abp.Auditing;
+using Volo.Abp.Domain.Entities.Auditing;
 
 namespace CosmeticClinicManagement.Domain.ClinicManagement
 {
     public class Session : FullAuditedEntity<Guid>
     {
         public DateTime SessionDate { get; private set; }
-        public List<UsedMaterial> UsedMaterials { get; private set; }=new();
+        public List<UsedMaterial> UsedMaterials { get; private set; }= new List<UsedMaterial>();
         public List<string> Notes { get; private set; }
         public SessionStatus Status { get; private set; }
         public Guid PlanId { get; private set; }
@@ -25,19 +28,22 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
             }
 
             SessionDate = sessionDate;
-            UsedMaterials = [];
+            UsedMaterials =  new List<UsedMaterial>();
             Notes = notes;
             Status = status;
             PlanId = planId;
         }
-
+        //public UsedMaterial(List<UsedMaterial> items)
+        //{
+        //    // نعمل نسخة جديدة للـ List عشان نحافظ على immutability
+        //   UsedMaterials = new List<UsedMaterial>(items);
+        //}
         public void AddUsedMaterial(UsedMaterial usedMaterial)
         {
             if (!IsInProgress())
             {
                 throw new InvalidOperationException("Cannot add used materials to an inactive session.");
             }
-
             var existingMaterial = UsedMaterials.FirstOrDefault(um => um.RawMaterialId == usedMaterial.RawMaterialId);
             if (existingMaterial != null)
             {
@@ -45,8 +51,13 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
             }
             else
             {
-                UsedMaterials.Add(usedMaterial);
+                UsedMaterials = new List<UsedMaterial>(UsedMaterials);
+
+                //var newList = new List<UsedMaterial>(UsedMaterials);
+
+                //return new UsedMaterial(newList) ;
             }
+         
         }
 
         public void AddNote(string note)

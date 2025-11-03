@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using System.Numerics;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
+using Volo.Abp.Domain.Entities;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.ObjectMapping;
+using Volo.Abp.Uow;
 
 namespace CosmeticClinicManagement.Services.Implementation
 {
@@ -77,12 +79,33 @@ input)
             await _sessionRepository.DeleteAsync(id);
         }
         //[Authorize]
+        
         public async Task CreateUsedMaterialAsync(Guid SessionId, [FromBody] CreateUpdateUsedMaterialDto input)
         {
-            var session = await _sessionRepository.GetAsync(SessionId);
-            session.AddUsedMaterial(new UsedMaterial(input.RawMaterialId,input.Quantity));
-            await _sessionRepository.UpdateAsync(session);
+                var sessionExists = await _sessionRepository.AnyAsync(s => s.Id == SessionId);
+            if (!sessionExists)
+            {
+                throw new EntityNotFoundException(typeof(Session), SessionId);
+            }
+            else
+            {
+                var session = await _sessionRepository.GetAsync(SessionId);
+                session.AddUsedMaterial(new UsedMaterial(input.RawMaterialId, input.Quantity));
+                await _sessionRepository.UpdateAsync(session, true);
+                var sessionNew = new Session(
+    Guid.NewGuid(),
+    Guid.Parse("93a0ae98-5e5b-fad2-3444-3a1d569637f2"),
+    Clock.Now.AddDays(5),
+    new List<string> { "Apply sunscreen after session", "Extra hydration requested" },
+    SessionStatus.InProgress
+    );
+                sessionNew.AddUsedMaterial(new UsedMaterial(Guid.Parse("a4edd6eb-24a0-4d2c-95f9-275d1d90eb6e"), 2m));
+                await _sessionRepository.InsertAsync(sessionNew, true);
+            }
+
+            
         }
+
  //       public async Task<PagedResultDto<UsedMaterialDto>>GetUsedMaterialsAsync(Guid SessionId,
  //PagedAndSortedResultRequestDto input)
  //       {

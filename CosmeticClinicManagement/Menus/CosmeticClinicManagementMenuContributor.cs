@@ -73,8 +73,9 @@ public class CosmeticClinicManagementMenuContributor : IMenuContributor
         {
             administration.TryRemoveMenuItem(TenantManagementMenuNames.GroupName);
         }
-
-        context.Menu.AddItem(
+        if (await context.IsGrantedAsync("TreatmentPlanManagement"))
+        {
+            context.Menu.AddItem(
          new ApplicationMenuItem(
          "TreatmentPlan",
          l["Menu:TreatmentPlan"],
@@ -87,7 +88,7 @@ public class CosmeticClinicManagementMenuContributor : IMenuContributor
          )
          )
         );
-
+        }
         //context.Menu.AddItem(
         // new ApplicationMenuItem(
         // "SessionManagement",
