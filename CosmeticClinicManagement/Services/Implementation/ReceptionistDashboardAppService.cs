@@ -1,7 +1,6 @@
 ﻿using CosmeticClinicManagement.Domain.ClinicManagement;
 using CosmeticClinicManagement.Domain.PatientAggregateRoot;
 using Volo.Abp.Application.Services;
-using Volo.Abp.Domain.Repositories;
 using CosmeticClinicManagement.Services.Dtos.Dashboard;
 using CosmeticClinicManagement.Domain.Interfaces;
 using Volo.Abp.Identity;
@@ -11,12 +10,12 @@ namespace CosmeticClinicManagement.Services.Implementation
     public class ReceptionistDashboardAppService : ApplicationService
     {
         private readonly ITreatmentPlanRepository _treatmentPlanRepository;
-        private readonly IRepository<Patient, Guid> _patientRepository;
+        private readonly IPatientRepository _patientRepository;
         private readonly IIdentityUserRepository _userRepository;
 
         public ReceptionistDashboardAppService(
             ITreatmentPlanRepository treatmentPlanRepository,
-            IRepository<Patient, Guid> patientRepository,
+            IPatientRepository patientRepository,
             IIdentityUserRepository userRepository)
         {
             _treatmentPlanRepository = treatmentPlanRepository;

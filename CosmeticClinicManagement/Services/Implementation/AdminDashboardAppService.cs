@@ -8,13 +8,14 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
 using IdentityUser = Volo.Abp.Identity.IdentityUser;
+using CosmeticClinicManagement.Domain.Interfaces;
 
 namespace CosmeticClinicManagement.Services.Implementation
 {
     public class AdminDashboardAppService : ApplicationService
     {
-        private readonly IRepository<Patient, Guid> _patientRepository;
-        private readonly IRepository<TreatmentPlan, Guid> _treatmentPlanRepository;
+        private readonly IPatientRepository _patientRepository;
+        private readonly ITreatmentPlanRepository _treatmentPlanRepository;
         private readonly IRepository<Store, Guid> _storeRepository;
         private readonly IdentityUserManager _userManager;
         private readonly IIdentityUserRepository _userRepository;
@@ -24,8 +25,8 @@ namespace CosmeticClinicManagement.Services.Implementation
         private const int EXPIRY_WARNING_DAYS = 30;
 
         public AdminDashboardAppService(
-            IRepository<Patient, Guid> patientRepository,
-            IRepository<TreatmentPlan, Guid> treatmentPlanRepository,
+            IPatientRepository patientRepository,
+            ITreatmentPlanRepository treatmentPlanRepository,
             IRepository<Store, Guid> storeRepository,
             IdentityUserManager userManager,
             IIdentityUserRepository userRepository)

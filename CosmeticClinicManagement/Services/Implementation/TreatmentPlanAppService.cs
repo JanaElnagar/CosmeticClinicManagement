@@ -16,6 +16,7 @@ using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
 using Volo.Abp.ObjectMapping;
+using Volo.Abp.Uow;
 
 
 namespace CosmeticClinicManagement.Services.Implementation
@@ -23,70 +24,69 @@ namespace CosmeticClinicManagement.Services.Implementation
     [Authorize("TreatmentPlanManagement")]
     public class TreatmentPlanAppService : ApplicationService, ITreatmentPlanAppService
     {
-        private readonly IRepository<TreatmentPlan, Guid> _treatmentPlanRepository;
+        private readonly ITreatmentPlanRepository _treatmentPlanRepository;
         private readonly IRepository<Session, Guid> _sessionRepository;
-        private readonly IRepository<Patient, Guid> _patientRepository;
+        private readonly IPatientRepository _patientRepository;
         private readonly IRepository<RawMaterial, Guid> _rawMaterialRepository;
-        private readonly IRepository<Volo.Abp.Identity.IdentityUser, Guid> _doctorRepository;
-        private readonly UserManager<Volo.Abp.Identity.IdentityUser> _userManager;
+        private readonly IIdentityUserRepository _userRepository;
+        private readonly IUnitOfWorkManager _unitOfWorkManager;
 
-        public TreatmentPlanAppService(IRepository<TreatmentPlan, Guid> treatmentPlanRepository, IRepository<Session, Guid> sessionRepository
-            , IRepository<Patient, Guid> patientRepository,IRepository<RawMaterial,Guid> rawMaterialRepository,
-            IRepository<Volo.Abp.Identity.IdentityUser,Guid> doctorRepository, UserManager<Volo.Abp.Identity.IdentityUser> userManager)
+        public TreatmentPlanAppService(ITreatmentPlanRepository treatmentPlanRepository, IRepository<Session, Guid> sessionRepository
+            , IPatientRepository patientRepository, IRepository<RawMaterial, Guid> rawMaterialRepository, IIdentityUserRepository userRepository, IUnitOfWorkManager unitOfWorkManager)
         {
             _treatmentPlanRepository = treatmentPlanRepository;
             _sessionRepository = sessionRepository;
             _patientRepository = patientRepository;
-            _rawMaterialRepository=rawMaterialRepository;
-            _doctorRepository = doctorRepository;
-            _userManager = userManager;
+            _rawMaterialRepository = rawMaterialRepository;
+            _userRepository = userRepository;
+            _unitOfWorkManager = unitOfWorkManager;
         }
 
-
-        //public async Task<TreatmentPlanDto> CreateAsync(string text)
-        //{
-        //    var todoItem = await _treatmentPlanRepository.InsertAsync(
-        //        new TodoItem { Text = text }
-        //    );
-
-        //    return new TodoItemDto
-        //    {
-        //        Id = todoItem.Id,
-        //        Text = todoItem.Text
-        //    };
-        //}
-        public async Task<PagedResultDto<TreatmentPlanDto>> GetListAsync(
-                                PagedAndSortedResultRequestDto input)
+        /*
+            public Guid Id { get; set; }
+            public string DoctorName { get; set; }
+            public string PatientFullName { get; set; }
+            public int TotalSessions { get; set; }
+            public TreatmentPlanStatus Status { get; set; }
+            public DateTime CreatedDate { get; set; }
+            public int PatientAge { get; set; }
+         */
+        public async Task<PagedResultDto<TreatmentPlanDto>> GetListAsync(PagedAndSortedResultRequestDto input)
         {
-            var queryable = await _treatmentPlanRepository.WithDetailsAsync(x => x.Sessions, x =>x.Doctor);
-            var paged = queryable.OrderBy(tp => tp.Id)
-            .Skip(input.SkipCount)
-            .Take(input.MaxResultCount).Select(tp => new TreatmentPlanDto
-            {
-                Id = tp.Id,
-                DoctorId = tp.DoctorId,
-                DoctorName = tp.Doctor.Name,
-                PatientId = tp.PatientId,
-                Status = tp.Status,
-                CreatedDate = tp.CreationTime,
-                Sessions = tp.Sessions.ToList()
-            });
-            var planDtos
-                = await
-           AsyncExecuter.ToListAsync(paged);
-            var count = await _treatmentPlanRepository.GetCountAsync();
-           
-            // Efficient lookup for patient names
-            var patientIds = planDtos.Select(x => x.PatientId).Distinct().ToList();
-            var patients = await _patientRepository.GetListAsync(p => patientIds.Contains(p.Id));
-            var patientDict = patients.ToDictionary(p => p.Id, p => p.FullName);
+            var treatmentPlans = await _treatmentPlanRepository.GetPagedListAsync(
+                input.SkipCount,
+                input.MaxResultCount,
+                input.Sorting ?? "CreationTime DESC"
+            );
 
-            foreach (var plan in planDtos)
-            {
-                plan.PatientFullName = patientDict.GetValueOrDefault(plan.PatientId, "Unknown");
-            }
+            var doctorsIds = treatmentPlans.Select(tp => tp.DoctorId).Distinct().ToList();
+            var patientsIds = treatmentPlans.Select(tp => tp.PatientId).Distinct().ToList();
 
-            return new PagedResultDto<TreatmentPlanDto>(count, planDtos);
+            var doctors = await _userRepository.GetListByIdsAsync(doctorsIds);
+            var patients = await _patientRepository.GetPatientNamesAndDateOfBirthAsync(patientsIds);
+
+
+            var treatmentPlanDtos = treatmentPlans.Select(tp =>
+            {
+                var doctor = doctors.FirstOrDefault(d => d.Id == tp.DoctorId);
+                var patient = patients[tp.PatientId];
+                return new TreatmentPlanDto
+                {
+                    Id = tp.Id,
+                    DoctorName = doctor != null ? $"{doctor.Name} {doctor.Surname}" : "Unknown Doctor",
+                    PatientFullName = patient.FullName,
+                    TotalSessions = tp.Sessions.Count,
+                    Status = tp.Status,
+                    CreatedDate = tp.CreationTime,
+                    PatientAge = DateTime.Now.Year - patient.DateOfBirth.Year
+                };
+            }).ToList();
+
+
+            return new PagedResultDto<TreatmentPlanDto>(
+                await _treatmentPlanRepository.CountAsync(),
+                treatmentPlanDtos
+            );
         }
 
         public async Task CreateAsync(CreateUpdateTreatmentPlanDto input)
@@ -98,24 +98,20 @@ namespace CosmeticClinicManagement.Services.Implementation
             }
 
             await _treatmentPlanRepository.InsertAsync(
-            ObjectMapper.Map<CreateUpdateTreatmentPlanDto, TreatmentPlan>
-           (input)
-            );
+            ObjectMapper.Map<CreateUpdateTreatmentPlanDto, TreatmentPlan>(input));
         }
 
-        public async Task<PagedResultDto<SessionDto>>
- GetSessionsAsync(Guid planId,PagedAndSortedResultRequestDto
-input)
+        public async Task<PagedResultDto<SessionDto>> GetSessionsAsync(Guid planId, PagedAndSortedResultRequestDto input)
         {
             var queryable = await _sessionRepository
      .WithDetailsAsync(x => x.UsedMaterials);
-            queryable = queryable.Where(s=>s.PlanId==planId)
+            queryable = queryable.Where(s => s.PlanId == planId)
                 .OrderByDescending(tp => tp.CreationTime)
             .Skip(input.SkipCount)
             .Take(input.MaxResultCount);
             var sessions = await
            AsyncExecuter.ToListAsync(queryable);
-            var count = await _sessionRepository.CountAsync(s => s.PlanId==planId);
+            var count = await _sessionRepository.CountAsync(s => s.PlanId == planId);
             return new PagedResultDto<SessionDto>(
             count,
             ObjectMapper.Map<List<Session>, List<SessionDto>>
@@ -147,7 +143,7 @@ input)
            (input, treatmentPlan);
         }
         //[Authorize]
-        public async Task CreateSessionAsync(Guid PlanId , [FromBody]CreateSessionDto input)
+        public async Task CreateSessionAsync(Guid PlanId, [FromBody] CreateSessionDto input)
         {
             var treatmentPlan = await _treatmentPlanRepository.GetAsync(input.PlanId);
             treatmentPlan.AddSession(new Session(
@@ -191,16 +187,7 @@ input)
         }
         public async Task<ListResultDto<DoctorDto>> GetDoctorsAsync()
         {
-            var doctorUsers = await _userManager.GetUsersInRoleAsync("Doctor");
-
-            // Get all users with Doctor role from IdentityServer
-
-
-            return new ListResultDto<DoctorDto>(doctorUsers.Select(d => new DoctorDto
-            {
-                Id = d.Id,
-                Name = d.Name
-            }).ToList());
+            throw new NotImplementedException();
         }
 
     }

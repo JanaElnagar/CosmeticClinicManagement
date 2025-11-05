@@ -9,7 +9,6 @@ namespace CosmeticClinicManagement.Pages.TreatmentPlan
     {
         public async Task OnGet()
         {
-          //  TreatmentPlan = await _treatmentPlanAppService.GetListAsync();
         }
     }
 }

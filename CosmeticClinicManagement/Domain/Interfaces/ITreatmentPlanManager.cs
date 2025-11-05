@@ -8,7 +8,6 @@ namespace CosmeticClinicManagement.Domain.Interfaces
     {
         Task<Session> BookSession(Guid planId, DateTime sessionDate, List<string> notes);
 
-        [UnitOfWork]
         Task AddUsedMaterialToSession(Guid planId, Guid sessionId, Guid rawMaterialId, decimal quantity);
     }
 }

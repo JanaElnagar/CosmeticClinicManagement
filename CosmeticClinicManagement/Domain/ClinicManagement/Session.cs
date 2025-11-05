@@ -8,7 +8,7 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
     public class Session : FullAuditedEntity<Guid>
     {
         public DateTime SessionDate { get; private set; }
-        public List<UsedMaterial> UsedMaterials { get; private set; }= new List<UsedMaterial>();
+        public List<UsedMaterial> UsedMaterials { get; private set; } = [];
         public List<string> Notes { get; private set; }
         public SessionStatus Status { get; private set; }
         public Guid PlanId { get; private set; }
@@ -29,15 +29,11 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
 
             SessionDate = sessionDate;
             UsedMaterials =  new List<UsedMaterial>();
-            Notes = notes != null ? new List<string>(notes) : new List<string>();
+            Notes = notes;
             Status = status;
             PlanId = planId;
         }
-        //public UsedMaterial(List<UsedMaterial> items)
-        //{
-        //    // نعمل نسخة جديدة للـ List عشان نحافظ على immutability
-        //   UsedMaterials = new List<UsedMaterial>(items);
-        //}
+        
         public void AddUsedMaterial(UsedMaterial usedMaterial)
         {
             if (!IsInProgress())
@@ -47,19 +43,11 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
             var existingMaterial = UsedMaterials.FirstOrDefault(um => um.RawMaterialId == usedMaterial.RawMaterialId);
             if (existingMaterial != null)
             {
-                UsedMaterials.Remove(existingMaterial);
-                UsedMaterials=new List<UsedMaterial>(UsedMaterials)
-                {
-                    (existingMaterial.AddQuantity(usedMaterial.Quantity)) };
-                //existingMaterial.AddQuantity(usedMaterial.Quantity);
+                existingMaterial.AddQuantity(usedMaterial.Quantity);
             }
             else
             {
-                UsedMaterials = new List<UsedMaterial>(UsedMaterials) { usedMaterial};
-
-                //var newList = new List<UsedMaterial>(UsedMaterials);
-
-                //return new UsedMaterial(newList) ;
+                UsedMaterials.Add(usedMaterial);
             }
          
         }

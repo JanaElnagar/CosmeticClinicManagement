@@ -8,11 +8,8 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
     public class TreatmentPlan : FullAuditedAggregateRoot<Guid>
     {
         public Guid DoctorId { get; private set; }
-        //useless
-        [ForeignKey("DoctorId")]
-        public virtual Volo.Abp.Identity.IdentityUser Doctor { get; private set; }
         public Guid PatientId { get; private set; }
-        public List<Session> Sessions { get; private set; } = new();
+        public List<Session> Sessions { get; private set; } = [];
         public TreatmentPlanStatus Status { get; private set; }
 
         protected TreatmentPlan() { }
@@ -23,9 +20,8 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
             PatientId = patientId;
             Status = TreatmentPlanStatus.Ongoing;
 
-            Sessions = new List<Session>();
-            
- }
+            Sessions = [];
+        }
 
 
         internal void AddSession(Session session)

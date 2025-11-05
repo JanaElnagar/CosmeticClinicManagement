@@ -9,23 +9,22 @@
  <abp-script src="/Pages/TreatmentPlan/index.js" />
 }
 <abp-card>
- <abp-card-header>
-     <abp-row>
-         <abp-column size-md="_6">
-             <abp-card-title>@L["Menu:TreatmentPlans"]</abp-card-title>
-         </abp-column>
-         <abp-column size-md="_6" class="text-end">
- <abp-button id="NewTreatmentPlanButton"
- text="@L["NewTreatmentPlan"].Value"
- icon="plus"
- button-type="Primary"/>
- </abp-column>
- </abp-row>
-
- </abp-card-header>
- <abp-card-body>
- <abp-table id="TreatmentPlansTable" striped-rows="true" />
- </abp-card-body>
+    <abp-card-header>
+        <abp-row>
+            <abp-column size-md="_6">
+                <abp-card-title>@L["Menu:TreatmentPlans"]</abp-card-title>
+            </abp-column>
+            <abp-column size-md="_6" class="text-end">
+                <abp-button id="NewTreatmentPlanButton"
+                     text="@L["NewTreatmentPlan"].Value"
+                     icon="plus"
+                     button-type="Primary"/>
+            </abp-column>
+        </abp-row>
+    </abp-card-header>
+    <abp-card-body>
+        <abp-table id="TreatmentPlansTable" striped-rows="true" />
+    </abp-card-body>
 </abp-card>
 
 

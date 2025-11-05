@@ -57,11 +57,6 @@ public class CosmeticClinicManagementDbContext : AbpDbContext<CosmeticClinicMana
                 .WithOne()
                 .HasForeignKey("PlanId")
                 .OnDelete(DeleteBehavior.Cascade);
-
-            b.HasOne(tp => tp.Doctor)
-               .WithMany()
-               .HasForeignKey(tp => tp.DoctorId)
-               .OnDelete(DeleteBehavior.Cascade);
         });
 
         builder.Entity<Session>(b =>

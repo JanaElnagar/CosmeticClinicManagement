@@ -6,14 +6,9 @@ namespace CosmeticClinicManagement.Services.Interfaces
 {
     public interface ITreatmentPlanAppService : IApplicationService
     {
-        Task<PagedResultDto<TreatmentPlanDto>>
- GetListAsync(PagedAndSortedResultRequestDto
-input);
+        Task<PagedResultDto<TreatmentPlanDto>> GetListAsync(PagedAndSortedResultRequestDto input);
 
-        Task<PagedResultDto<SessionDto>>
- GetSessionsAsync(Guid PlanId,PagedAndSortedResultRequestDto
-input);
-
+        Task<PagedResultDto<SessionDto>> GetSessionsAsync(Guid PlanId, PagedAndSortedResultRequestDto input);
         Task CreateAsync(CreateUpdateTreatmentPlanDto input);
         Task<TreatmentPlanDto> GetAsync(Guid id);
         Task UpdateAsync(Guid id, CreateUpdateTreatmentPlanDto input);
