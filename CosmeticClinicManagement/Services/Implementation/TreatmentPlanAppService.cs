@@ -1,9 +1,12 @@
 ﻿using CosmeticClinicManagement.Domain.ClinicManagement;
 using CosmeticClinicManagement.Domain.Interfaces;
+using CosmeticClinicManagement.Domain.InventoryManagement;
 using CosmeticClinicManagement.Domain.PatientAggregateRoot;
+using CosmeticClinicManagement.Domain.Services;
 using CosmeticClinicManagement.Services.Dtos;
 using CosmeticClinicManagement.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -11,6 +14,7 @@ using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Identity;
 using Volo.Abp.ObjectMapping;
 
 
@@ -22,13 +26,20 @@ namespace CosmeticClinicManagement.Services.Implementation
         private readonly IRepository<TreatmentPlan, Guid> _treatmentPlanRepository;
         private readonly IRepository<Session, Guid> _sessionRepository;
         private readonly IRepository<Patient, Guid> _patientRepository;
+        private readonly IRepository<RawMaterial, Guid> _rawMaterialRepository;
+        private readonly IRepository<Volo.Abp.Identity.IdentityUser, Guid> _doctorRepository;
+        private readonly UserManager<Volo.Abp.Identity.IdentityUser> _userManager;
 
         public TreatmentPlanAppService(IRepository<TreatmentPlan, Guid> treatmentPlanRepository, IRepository<Session, Guid> sessionRepository
-            , IRepository<Patient, Guid> patientRepository)
+            , IRepository<Patient, Guid> patientRepository,IRepository<RawMaterial,Guid> rawMaterialRepository,
+            IRepository<Volo.Abp.Identity.IdentityUser,Guid> doctorRepository, UserManager<Volo.Abp.Identity.IdentityUser> userManager)
         {
             _treatmentPlanRepository = treatmentPlanRepository;
             _sessionRepository = sessionRepository;
             _patientRepository = patientRepository;
+            _rawMaterialRepository=rawMaterialRepository;
+            _doctorRepository = doctorRepository;
+            _userManager = userManager;
         }
 
 
@@ -93,18 +104,18 @@ namespace CosmeticClinicManagement.Services.Implementation
         }
 
         public async Task<PagedResultDto<SessionDto>>
- GetSessionsAsync(Guid PlanId,PagedAndSortedResultRequestDto
+ GetSessionsAsync(Guid planId,PagedAndSortedResultRequestDto
 input)
         {
             var queryable = await _sessionRepository
      .WithDetailsAsync(x => x.UsedMaterials);
-            queryable = queryable.Where(s=>s.PlanId==PlanId)
-                .OrderBy(tp => tp.Id)
+            queryable = queryable.Where(s=>s.PlanId==planId)
+                .OrderByDescending(tp => tp.CreationTime)
             .Skip(input.SkipCount)
             .Take(input.MaxResultCount);
             var sessions = await
            AsyncExecuter.ToListAsync(queryable);
-            var count = await _sessionRepository.CountAsync(s => s.PlanId==PlanId);
+            var count = await _sessionRepository.CountAsync(s => s.PlanId==planId);
             return new PagedResultDto<SessionDto>(
             count,
             ObjectMapper.Map<List<Session>, List<SessionDto>>
@@ -136,7 +147,7 @@ input)
            (input, treatmentPlan);
         }
         //[Authorize]
-        public async Task CreateSessionAsync(Guid PlanId , [FromBody]CreateUpdateSessionDto input)
+        public async Task CreateSessionAsync(Guid PlanId , [FromBody]CreateSessionDto input)
         {
             var treatmentPlan = await _treatmentPlanRepository.GetAsync(input.PlanId);
             treatmentPlan.AddSession(new Session(
@@ -150,6 +161,46 @@ input)
         public async Task DeleteAsync(Guid id)
         {
             await _treatmentPlanRepository.DeleteAsync(id);
+        }
+        public async Task AddUsedMaterialToSessionAsync(Guid planId, Guid sessionId, Guid rawMaterialId, decimal quantity)
+        {
+            if (quantity <= 0)
+            {
+                throw new ArgumentException("Quantity must be greater than zero.", nameof(quantity));
+            }
+
+            var rawMaterial = await _rawMaterialRepository.FindAsync(rawMaterialId)
+                ?? throw new InvalidOperationException("Raw material not found.");
+
+            if (quantity > rawMaterial.Quantity)
+            {
+                throw new InvalidOperationException("Insufficient raw material quantity available.");
+            }
+
+            var plan = await _treatmentPlanRepository.FindAsync(planId, includeDetails: true)
+                ?? throw new InvalidOperationException("Treatment plan not found.");
+
+            plan.AddUsedMaterialToSession(sessionId, new UsedMaterial(rawMaterialId, quantity));
+        }
+
+        public async Task<ListResultDto<PatientDto>> GetPatientsAsync()
+        {
+            var patients = await _patientRepository.GetListAsync();
+            var patientsDtos = ObjectMapper.Map<List<Patient>, List<PatientDto>>(patients);
+            return new ListResultDto<PatientDto>(patientsDtos);
+        }
+        public async Task<ListResultDto<DoctorDto>> GetDoctorsAsync()
+        {
+            var doctorUsers = await _userManager.GetUsersInRoleAsync("Doctor");
+
+            // Get all users with Doctor role from IdentityServer
+
+
+            return new ListResultDto<DoctorDto>(doctorUsers.Select(d => new DoctorDto
+            {
+                Id = d.Id,
+                Name = d.Name
+            }).ToList());
         }
 
     }

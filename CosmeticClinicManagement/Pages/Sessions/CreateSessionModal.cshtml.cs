@@ -45,7 +45,7 @@ namespace CosmeticClinicManagement.Pages.Sessions
         {
             // TODO
             await _treatmentPlanAppService.CreateSessionAsync(
-                PlanId,ObjectMapper.Map<CreateEditSessionViewModel, CreateUpdateSessionDto>(Session)
+                PlanId,ObjectMapper.Map<CreateEditSessionViewModel, CreateSessionDto>(Session)
  );
             return NoContent();
         }

@@ -10,6 +10,7 @@ using System.Linq;
 
 using System.Threading.Tasks;
 using Volo.Abp.AspNetCore.Mvc.UI.RazorPages;
+using NUglify.Helpers;
 namespace CosmeticClinicManagement.Pages.TreatmentPlan
 {
     public class CreateTreatmentPlanModalModel : AbpPageModel
@@ -17,16 +18,24 @@ namespace CosmeticClinicManagement.Pages.TreatmentPlan
 
         [BindProperty]
         public CreateEditTreatmentPlanViewModel TreatmentPlan { get;  set; }
+        [BindProperty]
+        public SelectListItem[] Doctors { get; set; }
+        [BindProperty]
+        public SelectListItem[] Patients { get; set; }
 
         [BindProperty]
-        public List<CreateUpdateSessionDto> Session { get; set; }
+       public List<UpdateSessionDto> Session { get; set; }
+
         // public SelectListItem[] Categories { get; set; }
         private readonly ITreatmentPlanAppService
        _treatmentPlanAppService;
+        //private readonly IPatientAppService _patientAppService;
+
         public CreateTreatmentPlanModalModel(
         ITreatmentPlanAppService treatmentPlanAppService)
         {
             _treatmentPlanAppService = treatmentPlanAppService;
+
         }
         public async Task OnGetAsync() {
             TreatmentPlan = new CreateEditTreatmentPlanViewModel
@@ -36,7 +45,12 @@ namespace CosmeticClinicManagement.Pages.TreatmentPlan
 
                 
             };
-         //   TreatmentPlan.Sessions = Session;
+            var doctorLookup = await _treatmentPlanAppService.GetDoctorsAsync();
+          Doctors = doctorLookup.Items.Select(x => new SelectListItem(x.Name, x.Id.ToString())).ToArray();
+            var patientLookup = await _treatmentPlanAppService.GetPatientsAsync();
+           Patients=patientLookup.Items.Select(x => new SelectListItem(x.FullName, x.Id.ToString())).ToArray();
+        
+            //   TreatmentPlan.Sessions = Session;
             // TODO
         }
  public async Task<IActionResult> OnPostAsync()
@@ -50,6 +64,7 @@ namespace CosmeticClinicManagement.Pages.TreatmentPlan
  );
             return NoContent();
         }
+
     }
 }
 

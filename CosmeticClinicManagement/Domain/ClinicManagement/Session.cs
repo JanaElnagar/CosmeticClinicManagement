@@ -29,7 +29,7 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
 
             SessionDate = sessionDate;
             UsedMaterials =  new List<UsedMaterial>();
-            Notes = notes;
+            Notes = notes != null ? new List<string>(notes) : new List<string>();
             Status = status;
             PlanId = planId;
         }
@@ -47,11 +47,15 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
             var existingMaterial = UsedMaterials.FirstOrDefault(um => um.RawMaterialId == usedMaterial.RawMaterialId);
             if (existingMaterial != null)
             {
-                existingMaterial.AddQuantity(usedMaterial.Quantity);
+                UsedMaterials.Remove(existingMaterial);
+                UsedMaterials=new List<UsedMaterial>(UsedMaterials)
+                {
+                    (existingMaterial.AddQuantity(usedMaterial.Quantity)) };
+                //existingMaterial.AddQuantity(usedMaterial.Quantity);
             }
             else
             {
-                UsedMaterials = new List<UsedMaterial>(UsedMaterials);
+                UsedMaterials = new List<UsedMaterial>(UsedMaterials) { usedMaterial};
 
                 //var newList = new List<UsedMaterial>(UsedMaterials);
 
@@ -80,6 +84,14 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
             Status = newStatus;
         }
 
+        public void UpdateDate(DateTime sessionDate)
+        {
+            if (sessionDate < DateTime.Now)
+                throw new ArgumentException("Session date cannot be in the past.");
+
+            SessionDate = sessionDate;
+        }
+
         private bool IsInProgress()
         {
             return Status == SessionStatus.InProgress;
@@ -88,6 +100,15 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
         private bool IsOpen()
         {
             return Status == SessionStatus.Planned || Status == SessionStatus.InProgress;
+        }
+        public void ClearNotes()
+        {
+            Notes.Clear();
+        }
+
+        public void ClearUsedMaterials()
+        {
+            UsedMaterials.Clear();
         }
     }
 }

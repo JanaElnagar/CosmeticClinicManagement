@@ -19,9 +19,9 @@ public class CosmeticClinicManagementAutoMapperProfile : Profile
         CreateMap<SessionDto, Session>().ReverseMap();
        
         CreateMap<CreateUpdateTreatmentPlanDto, TreatmentPlan>();
-        CreateMap<CreateUpdateSessionDto, Session>().ReverseMap();
+        CreateMap<UpdateSessionDto, Session>().ReverseMap();
         CreateMap<CreateEditTreatmentPlanViewModel, CreateUpdateTreatmentPlanDto>();
-        CreateMap<CreateEditSessionViewModel, CreateUpdateSessionDto>();
+        CreateMap<CreateEditSessionViewModel, UpdateSessionDto>();
 
         CreateMap<TreatmentPlanDto, CreateEditTreatmentPlanViewModel>();
         CreateMap<SessionDto, CreateEditSessionViewModel>();
@@ -32,6 +32,7 @@ public class CosmeticClinicManagementAutoMapperProfile : Profile
         CreateMap<PatientDto, Patient>().ReverseMap();
         CreateMap<CreateUpdatePatientDto, Patient>().ReverseMap();
         CreateMap<PatientDto, CreateUpdatePatientDto>().ReverseMap();
+        CreateMap<UsedMaterial,UsedMaterialDto>().ReverseMap();
 
     }
 }

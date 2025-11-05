@@ -18,7 +18,9 @@ input);
         Task<TreatmentPlanDto> GetAsync(Guid id);
         Task UpdateAsync(Guid id, CreateUpdateTreatmentPlanDto input);
         Task DeleteAsync(Guid id);
-        Task CreateSessionAsync (Guid PlanId,CreateUpdateSessionDto input);
+        Task CreateSessionAsync (Guid PlanId,CreateSessionDto input);
+        Task<ListResultDto<PatientDto>> GetPatientsAsync();
+        Task<ListResultDto<DoctorDto>> GetDoctorsAsync();
 
     }
 }

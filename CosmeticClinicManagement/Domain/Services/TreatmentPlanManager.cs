@@ -1,17 +1,23 @@
 ﻿using CosmeticClinicManagement.Domain.ClinicManagement;
 using CosmeticClinicManagement.Domain.Interfaces;
+using NuGet.Protocol.Plugins;
 using Volo.Abp.Domain.Services;
 using Volo.Abp.Guids;
 
 namespace CosmeticClinicManagement.Domain.Services
 {
-    public class TreatmentPlanManager(ITreatmentPlanRepository treatmentPlanRepository,
-        IGuidGenerator guidGenerator, IRawMaterialRepository rawMaterialRepository) : DomainService, ITreatmentPlanManager
+    public class TreatmentPlanManager : DomainService, ITreatmentPlanManager
     {
-        private readonly ITreatmentPlanRepository _treatmentPlanRepository = treatmentPlanRepository;
-        private readonly IGuidGenerator _guidGenerator = guidGenerator;
-        private readonly IRawMaterialRepository _rawMaterialRepository = rawMaterialRepository;
-
+        private readonly ITreatmentPlanRepository _treatmentPlanRepository;
+        private readonly IGuidGenerator _guidGenerator;
+        private readonly IRawMaterialRepository _rawMaterialRepository;
+        public TreatmentPlanManager(ITreatmentPlanRepository treatmentPlanRepository,
+        IGuidGenerator guidGenerator, IRawMaterialRepository rawMaterialRepository)
+        {
+            _treatmentPlanRepository = treatmentPlanRepository;
+            _guidGenerator = guidGenerator;
+            _rawMaterialRepository = rawMaterialRepository;
+        }
         public async Task AddUsedMaterialToSession(Guid planId, Guid sessionId, Guid rawMaterialId, decimal quantity)
         {
             if (quantity <= 0)

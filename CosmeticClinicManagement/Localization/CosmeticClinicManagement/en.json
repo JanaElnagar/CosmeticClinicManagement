@@ -22,6 +22,8 @@
     //"Enum:Status:3": "Completed",
     "Session": "Session",
     "Sessions": "Sessions",
+    "SessionsCount": "Sessions Count",
+    "NoSessions": "No Sessions",
     "SessionDate": "Session date",
     "Notes": "Notes",
     "NewTreatmentPlan": "New Treatment Plan",

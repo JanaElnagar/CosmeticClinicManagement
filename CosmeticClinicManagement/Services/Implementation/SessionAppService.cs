@@ -1,5 +1,6 @@
 ﻿using CosmeticClinicManagement.Domain.ClinicManagement;
 using CosmeticClinicManagement.Domain.Interfaces;
+using CosmeticClinicManagement.Domain.InventoryManagement;
 using CosmeticClinicManagement.Services.Dtos;
 using CosmeticClinicManagement.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,8 @@ namespace CosmeticClinicManagement.Services.Implementation
     public class SessionAppService: ApplicationService, ISessionAppService
     {
         private readonly IRepository<Session, Guid> _sessionRepository;
+        private readonly IRepository<RawMaterial,Guid> _rawMaterialRepository;
+
         public SessionAppService(IRepository<Session, Guid> sessionRepository)
         {
              _sessionRepository = sessionRepository;
@@ -39,14 +42,36 @@ input)
            (sessions)
             );
         }
-        public async Task CreateAsync(CreateUpdateSessionDto input)
+        public async Task CreateAsync(CreateSessionDto input)
         {
             try
             {
-                await _sessionRepository.InsertAsync(
-            ObjectMapper.Map<CreateUpdateSessionDto, Session>
-           (input)
-            );
+                var session = new Session(
+                  Guid.NewGuid(),
+                  input.PlanId,
+                  input.SessionDate,
+                  input.Notes ?? new List<string>(),
+                  SessionStatus.InProgress
+                  );
+                if (input.Notes != null && input.Notes.Any())
+                {
+                    foreach (var noteText in input.Notes)
+                    {
+                        session.AddNote(noteText); // make sure your domain entity has this method
+                    }
+                }
+                if (input.UsedMaterials != null && input.UsedMaterials.Any())
+                {
+                    foreach (var materialDto in input.UsedMaterials)
+                    {
+                        session.AddUsedMaterial(new UsedMaterial(materialDto.RawMaterialId, materialDto.Quantity));
+                    }
+                    await _sessionRepository.InsertAsync(session);
+                    await CurrentUnitOfWork.SaveChangesAsync();
+
+                 
+
+                }
             }
             catch (Exception ex)
             {
@@ -68,11 +93,38 @@ input)
             await _sessionRepository.GetAsync(id)
             );
         }
-        public async Task UpdateAsync(Guid id, CreateUpdateSessionDto
+        public async Task UpdateAsync(Guid id, UpdateSessionDto
         input)
         {
-            var session = await _sessionRepository.GetAsync(id);
-            ObjectMapper.Map(input, session);
+            var session = await _sessionRepository.GetAsync(id,includeDetails:true);
+            session.UpdateDate(input.SessionDate);
+            session.UpdateStatus(input.Status);
+
+            session.ClearNotes();
+            if (input.Notes != null && input.Notes.Any())
+            {
+                foreach (var noteText in input.Notes)
+                {
+                    session.AddNote(noteText);
+                }
+            }
+
+            session.ClearUsedMaterials();
+            if (input.UsedMaterials != null && input.UsedMaterials.Any())
+            {
+                foreach (var materialDto in input.UsedMaterials)
+                {
+                    session.AddUsedMaterial(
+                        new UsedMaterial(materialDto.RawMaterialId, materialDto.Quantity)
+                    );
+                }
+            }
+
+            await _sessionRepository.UpdateAsync(session,autoSave: true);
+            await CurrentUnitOfWork.SaveChangesAsync();
+
+           // return ObjectMapper.Map<Session, SessionDto>(session);
+
         }
         public async Task DeleteAsync(Guid id)
         {
@@ -89,9 +141,9 @@ input)
             }
             else
             {
-                var session = await _sessionRepository.GetAsync(SessionId);
-                session.AddUsedMaterial(new UsedMaterial(input.RawMaterialId, input.Quantity));
-                await _sessionRepository.UpdateAsync(session, true);
+                //var session = await _sessionRepository.GetAsync(SessionId);
+                //session.AddUsedMaterial(new UsedMaterial(input.RawMaterialId, input.Quantity));
+                //await _sessionRepository.UpdateAsync(session);
                 var sessionNew = new Session(
     Guid.NewGuid(),
     Guid.Parse("93a0ae98-5e5b-fad2-3444-3a1d569637f2"),
@@ -100,7 +152,7 @@ input)
     SessionStatus.InProgress
     );
                 sessionNew.AddUsedMaterial(new UsedMaterial(Guid.Parse("a4edd6eb-24a0-4d2c-95f9-275d1d90eb6e"), 2m));
-                await _sessionRepository.InsertAsync(sessionNew, true);
+                await _sessionRepository.InsertAsync(sessionNew);
             }
 
             

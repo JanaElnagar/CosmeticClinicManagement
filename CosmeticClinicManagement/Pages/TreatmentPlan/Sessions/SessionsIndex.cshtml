@@ -1,0 +1,22 @@
+﻿@page
+@using CosmeticClinicManagement.Pages.TreatmentPlan.Sessions
+@using Microsoft.Extensions.Localization
+@using CosmeticClinicManagement.Localization
+@model IndexModel
+@inject IStringLocalizer<CosmeticClinicManagementResource> L
+@{
+ Layout = null;
+}
+<abp-card>
+    <abp-card-header>
+        <abp-card-title>@L["Sessions"]</abp-card-title>
+    </abp-card-header>
+    <abp-card-body>
+        <p>Sessions Index Page</p>
+    </abp-card-body>
+</abp-card>
+
+@section scripts
+{
+    <abp-script src="/Pages/TreatmentPlan/Sessions/Index.js" />
+}

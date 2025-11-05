@@ -1,9 +1,15 @@
-﻿$(function () {
+﻿function initSessionsTable(planId) {
+    // Destroy if already exists (fixes "sorting not defined" on re-open)
+    var $table = $('#SessionsForPlanTable');
+    if ($.fn.DataTable.isDataTable($table)) {
+        $table.DataTable().destroy();
+        $table.empty();
+    }
     var editModal = new abp.ModalManager(abp.appPath + 'Sessions/EditSessionModal');
-    var planId = new URLSearchParams(window.location.search).get('planId');
+    //var planId = new URLSearchParams(window.location.search).get('planId');
 
     var l = abp.localization.getResource('CosmeticClinicManagement');
-    var dataTable = $('#SessionsForPlanTable').DataTable(
+    var dataTable = $table.DataTable(
         abp.libs.datatables.normalizeConfiguration({
             serverSide: true,
             paging: true,
@@ -11,7 +17,7 @@
             searching: false,
             scrollX: true,
             ajax: abp.libs.datatables.createAjax(
-                cosmeticClinicManagement.sessions.session.getListByPlan, { planId: planId }),
+                cosmeticClinicManagement.services.implementation.treatmentPlan.getSessions, { planId: planId }),
             columnDefs: [
                 /* TODO: Column definitions */
                 {
@@ -77,8 +83,15 @@
     createModal.onResult(function () {
         dataTable.ajax.reload();
     });
-    $('#NewSessionButton').click(function (e) {
+    $('#NewSessionButton').off('click').on('click', function (e) {
         e.preventDefault();
-        createModal.open();
+        createSessionModal.open({ planId: planId });
     });
-});
+}
+$(function () {
+    var planId = new URLSearchParams(window.location.search).get('planId');
+    if (planId) 
+        initSessionsTable(planId);
+    
+    }
+);

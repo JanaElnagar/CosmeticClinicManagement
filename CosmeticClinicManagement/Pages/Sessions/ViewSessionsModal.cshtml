@@ -1,29 +1,40 @@
-﻿ @page
-@using CosmeticClinicManagement.Pages.Sessions
+﻿@page
+@using CosmeticClinicManagement.Pages.TreatmentPlan.Sessions
 @using Microsoft.Extensions.Localization
 @using CosmeticClinicManagement.Localization
-@model IndexModel
+@model ViewSessionsModel
 @inject IStringLocalizer<CosmeticClinicManagementResource> L
+@{
+ Layout = null;
+}
+<abp-modal>
+    <abp-modal-header>
+        <abp-row>
+            <abp-column size-md="_6">
+                <abp-modal-title>@L["Menu:SessionsForTreatmentPlan"]</abp-modal-title>
+            </abp-column>
+            <abp-column size-md="_6" class="text-end">
+                <abp-button id="NewSessionButton"
+                    text="@L["NewSession"].Value"
+                    icon="plus"
+                    button-type="Primary"/>
+            </abp-column>
+        </abp-row>
+    </abp-modal-header>
+    <abp-modal-body>
+        <abp-input asp-for="PlanId" />
+        <abp-table id="SessionsForPlanTable" striped-rows="true" />
+    </abp-modal-body>
+     <abp-modal-footer>
+        <abp-button id="NewSessionButton"
+                    text="@L["NewSession"].Value"
+                    icon="plus"
+                    button-type="Primary" />
+        <abp-button button-type="Secondary" data-bs-dismiss="modal">@L["Close"]</abp-button>
+    </abp-modal-footer>
+</abp-modal>
+
 @section scripts
 {
- <abp-script src="/Pages/Sessions/Index.js" />
+    <abp-script src="/Pages/TreatmentPlan/Sessions/Index.js" />
 }
-<abp-card>
- <abp-card-header>
-        <abp-row>
-        <abp-column size-md="_6">
-        <abp-card-title>@L["Menu:Sessions"]</abp-card-title>
-        </abp-column>
-        <abp-column size-md="_6" class="text-end">
-        <abp-button id="NewSessionButton"
-        text="@L["NewSession"].Value"
-        icon="plus"
-        button-type="Primary"/>
-        </abp-column>
-        </abp-row>
-
- </abp-card-header>
- <abp-card-body>
- <abp-table id="SessionsTable" striped-rows="true" />
- </abp-card-body>
-</abp-card> 

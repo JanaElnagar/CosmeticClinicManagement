@@ -7,7 +7,7 @@ namespace CosmeticClinicManagement.Domain.ClinicManagement
         public Guid RawMaterialId { get; private set; }
         public decimal Quantity { get; private set; }
 
-        protected UsedMaterial() { }
+        public UsedMaterial() { }
 
         public UsedMaterial(Guid rawMaterialId, decimal quantity)
         {

@@ -41,7 +41,7 @@ namespace CosmeticClinicManagement.Pages.Sessions
                 Session.Notes = new List<string>();
             // TODO
             await _sessionAppService.UpdateAsync(Id,
-                ObjectMapper.Map<CreateEditSessionViewModel, CreateUpdateSessionDto>(Session)
+                ObjectMapper.Map<CreateEditSessionViewModel, UpdateSessionDto>(Session)
  );
             return NoContent();
         }

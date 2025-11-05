@@ -1,0 +1,26 @@
+﻿@page "{planId:guid}"
+@model CosmeticClinicManagement.Pages.TreatmentPlan.Sessions.ViewSessionsModel
+
+<div class="modal-header">
+    <h5 class="modal-title">
+        <i class="fa fa-list me-2"></i>Sessions for Plan
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="alert alert-info">
+        <p>Sessions List for Plan: @Model.PlanId</p>
+    </div>
+    
+    <div id="SessionsContainer">
+        <!-- Sessions will be loaded here -->
+        <p>Loading sessions...</p>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <i class="fa fa-times me-1"></i>Close
+    </button>
+</div>

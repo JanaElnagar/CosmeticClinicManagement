@@ -12,9 +12,9 @@ namespace CosmeticClinicManagement.Services.Interfaces
         Task CreateUsedMaterialAsync(Guid SessionId, CreateUpdateUsedMaterialDto input);
 
         Task<List<SessionDto>> GetListByPlanAsync(Guid PlanId);
-        Task CreateAsync(CreateUpdateSessionDto input);
+        Task CreateAsync(CreateSessionDto input);
         Task<SessionDto> GetAsync(Guid id);
-        Task UpdateAsync(Guid id, CreateUpdateSessionDto input);
+        Task UpdateAsync(Guid id, UpdateSessionDto input);
         Task DeleteAsync(Guid id);
 
    //     Task<PagedResultDto<UsedMaterialDto>> GetUsedMaterialAsync(Guid SessionId, PagedAndSortedResultRequestDto input);
