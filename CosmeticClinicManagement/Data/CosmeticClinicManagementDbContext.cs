@@ -16,9 +16,13 @@ namespace CosmeticClinicManagement.Data;
 
 public class CosmeticClinicManagementDbContext : AbpDbContext<CosmeticClinicManagementDbContext>
 {
-    public CosmeticClinicManagementDbContext(DbContextOptions<CosmeticClinicManagementDbContext> options)
+    private readonly Guid _contextId = Guid.NewGuid();
+    private readonly ILogger<CosmeticClinicManagementDbContext> _logger;
+    public CosmeticClinicManagementDbContext(DbContextOptions<CosmeticClinicManagementDbContext> options, ILogger<CosmeticClinicManagementDbContext> logger)
         : base(options)
     {
+        _logger = logger;
+        _logger.LogInformation("🟢 DbContext [{ContextId}] created (Thread {ThreadId})", _contextId, Environment.CurrentManagedThreadId);
     }
 
     public DbSet<TreatmentPlan> TreatmentPlans { get; set; }
@@ -114,5 +118,18 @@ public class CosmeticClinicManagementDbContext : AbpDbContext<CosmeticClinicMana
             b.Property(x => x.Email).HasMaxLength(500);
             b.Ignore(x => x.FullName);
         });
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        _logger.LogInformation("🔴 DbContext [{ContextId}] disposed at {Time}", _contextId, DateTime.Now);
+    }
+
+
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        _logger.LogInformation("🔴 (async) DbContext [{ContextId}] disposed at {Time}", _contextId, DateTime.Now);
     }
 }

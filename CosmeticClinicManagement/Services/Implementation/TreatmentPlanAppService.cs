@@ -30,14 +30,16 @@ namespace CosmeticClinicManagement.Services.Implementation
         private readonly IRepository<RawMaterial, Guid> _rawMaterialRepository;
         private readonly IIdentityUserRepository _userRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly ILogger<TreatmentPlanAppService> _logger;
 
         public TreatmentPlanAppService(ITreatmentPlanRepository treatmentPlanRepository, IRepository<Session, Guid> sessionRepository
-            , IPatientRepository patientRepository, IRepository<RawMaterial, Guid> rawMaterialRepository, IIdentityUserRepository userRepository, IUnitOfWorkManager unitOfWorkManager)
+            , IPatientRepository patientRepository, IRepository<RawMaterial, Guid> rawMaterialRepository, IIdentityUserRepository userRepository, IUnitOfWorkManager unitOfWorkManager, ILogger<TreatmentPlanAppService> logger)
         {
             _treatmentPlanRepository = treatmentPlanRepository;
             _sessionRepository = sessionRepository;
             _patientRepository = patientRepository;
             _rawMaterialRepository = rawMaterialRepository;
+            _logger = logger;
             _userRepository = userRepository;
             _unitOfWorkManager = unitOfWorkManager;
         }
@@ -53,17 +55,28 @@ namespace CosmeticClinicManagement.Services.Implementation
          */
         public async Task<PagedResultDto<TreatmentPlanDto>> GetListAsync(PagedAndSortedResultRequestDto input)
         {
+            _logger.LogInformation("Fetching treatment plans with SkipCount: {SkipCount}, MaxResultCount: {MaxResultCount}, Sorting: {Sorting}",
+                input.SkipCount, input.MaxResultCount, input.Sorting);
+
             var treatmentPlans = await _treatmentPlanRepository.GetPagedListAsync(
                 input.SkipCount,
                 input.MaxResultCount,
                 input.Sorting ?? "CreationTime DESC"
             );
+            int totalCount = await _treatmentPlanRepository.CountAsync();
+            _logger.LogInformation("Fetched {Count} treatment plans from repository.", treatmentPlans.Count);
 
             var doctorsIds = treatmentPlans.Select(tp => tp.DoctorId).Distinct().ToList();
             var patientsIds = treatmentPlans.Select(tp => tp.PatientId).Distinct().ToList();
 
+            _logger.LogInformation("Fetching details for {DoctorCount} doctors and {PatientCount} patients.",
+                doctorsIds.Count, patientsIds.Count);
             var doctors = await _userRepository.GetListByIdsAsync(doctorsIds);
+            _logger.LogInformation("Fetched {DoctorCount} doctors.", doctors.Count);
+
+            _logger.LogInformation("Fetching patient names and dates of birth.");
             var patients = await _patientRepository.GetPatientNamesAndDateOfBirthAsync(patientsIds);
+            _logger.LogInformation("Fetched details for {PatientCount} patients.", patients.Count);
 
 
             var treatmentPlanDtos = treatmentPlans.Select(tp =>
@@ -84,7 +97,7 @@ namespace CosmeticClinicManagement.Services.Implementation
 
 
             return new PagedResultDto<TreatmentPlanDto>(
-                await _treatmentPlanRepository.CountAsync(),
+                totalCount,
                 treatmentPlanDtos
             );
         }

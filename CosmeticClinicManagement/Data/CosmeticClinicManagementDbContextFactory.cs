@@ -14,7 +14,7 @@ public class CosmeticClinicManagementDbContextFactory : IDesignTimeDbContextFact
         var builder = new DbContextOptionsBuilder<CosmeticClinicManagementDbContext>()
             .UseSqlServer(configuration.GetConnectionString("Default"));
 
-        return new CosmeticClinicManagementDbContext(builder.Options);
+        return new CosmeticClinicManagementDbContext(builder.Options, new Logger<CosmeticClinicManagementDbContext>(new LoggerFactory()));
     }
 
     private static IConfigurationRoot BuildConfiguration()

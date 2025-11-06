@@ -7,5 +7,6 @@ namespace CosmeticClinicManagement.Domain.Interfaces
     {
         Task<List<TreatmentPlan>> GetTreatmentPlansByDoctorIdAsync(Guid doctorId);
         Task<List<TreatmentPlan>> GetListWithDetailsAsync();
+        Task<List<TreatmentPlan>> GetPagedListAsync(int skipCount, int maxResultCount, string sorting);
     }
 }

@@ -84,7 +84,7 @@ public class CosmeticClinicManagementMenuContributor : IMenuContributor
          new ApplicationMenuItem(
          "CosmeticClinicManagement.TreatmentPlans",
          l["Menu:TreatmentPlans"],
-         url: "/NewTreatmentPlan"
+         url: "/TreatmentPlan"
          )
          )
         );

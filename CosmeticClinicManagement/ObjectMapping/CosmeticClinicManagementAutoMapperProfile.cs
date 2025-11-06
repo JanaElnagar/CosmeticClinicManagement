@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CosmeticClinicManagement.Domain.ClinicManagement;
 using CosmeticClinicManagement.Domain.PatientAggregateRoot;
-using CosmeticClinicManagement.Pages.Sessions;
 using CosmeticClinicManagement.Pages.TreatmentPlan;
 using CosmeticClinicManagement.Services.Dtos;
 using System.Collections.Generic;
@@ -20,11 +19,11 @@ public class CosmeticClinicManagementAutoMapperProfile : Profile
        
         CreateMap<CreateUpdateTreatmentPlanDto, TreatmentPlan>();
         CreateMap<UpdateSessionDto, Session>().ReverseMap();
-        CreateMap<CreateEditTreatmentPlanViewModel, CreateUpdateTreatmentPlanDto>();
-        CreateMap<CreateEditSessionViewModel, UpdateSessionDto>();
+        //CreateMap<CreateEditTreatmentPlanViewModel, CreateUpdateTreatmentPlanDto>();
+        //CreateMap<CreateEditSessionViewModel, UpdateSessionDto>();
 
-        CreateMap<TreatmentPlanDto, CreateEditTreatmentPlanViewModel>();
-        CreateMap<SessionDto, CreateEditSessionViewModel>();
+        //CreateMap<TreatmentPlanDto, CreateEditTreatmentPlanViewModel>();
+        //CreateMap<SessionDto, CreateEditSessionViewModel>();
         CreateMap<CreateUpdateUsedMaterialDto, UsedMaterial>().ReverseMap();
 
 

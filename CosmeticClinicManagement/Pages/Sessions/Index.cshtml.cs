@@ -1,12 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+//using Microsoft.AspNetCore.Mvc;
+//using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace CosmeticClinicManagement.Pages.Sessions
-{
-    public class IndexModel : PageModel
-    {
-        public void OnGet()
-        {
-        }
-    }
-}
+//namespace CosmeticClinicManagement.Pages.Sessions
+//{
+//    public class IndexModel : PageModel
+//    {
+//        public void OnGet()
+//        {
+//        }
+//    }
+//}
